@@ -1,7 +1,7 @@
 import pygame
 from pytmx import pytmx, TiledElement
 
-from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK, FPS, GREEN, TILE_SIZE
+from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK, FPS, GREEN, TILE_SIZE, DARK_GREEN
 from src.core.area import Area
 from src.entities.player import Player
 from src.entities.sprites import Spritesheet, Ground, Block, Enemy
@@ -16,14 +16,7 @@ class Engine:
         global engine
         engine = self
 
-        # self.active_objs = [] # Anything with an update() method which can be called
-
-        # Layers of what order things are drawn. UI Drawables draw over Background for example
-        self.background_drawables = []
-        self.collisions_drawables = []
-        # self.collision_objects_layer = []
-        # self.drawables = [] # Anything to be drawn in the world
-        # self.ui_drawables = [] # Anything to be drawn over the world
+        # self.active_objs = []
         # self.usables = []
         # self.effects = []
 
@@ -34,11 +27,11 @@ class Engine:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        self.character_spritesheet = Spritesheet('../assets/generic/character.png')
-        self.char_test_spritesheet = Spritesheet('../assets/generic/char_test.png')
-        self.terrain_spritesheet = Spritesheet('../assets/generic/terrain.png')
-        self.main_character_spritesheet = Spritesheet('../assets/characters/main_character_male/Character_Walk.png')
-
+        # self.character_spritesheet = Spritesheet('../../assets/generic/character.png')
+        self.char_test_spritesheet = Spritesheet('assets/generic/char_test.png')
+        # self.char_test_spritesheet = Spritesheet('assets/EditedSprites/PandaCharacter.png')
+        # self.terrain_spritesheet = Spritesheet('../../assets/generic/terrain.png')
+        # self.main_character_spritesheet = Spritesheet('../../assets/characters/main_character_male/Character_Walk.png')
         self.collision_objects_to_draw = []
 
 
@@ -52,7 +45,7 @@ class Engine:
         self.attacks = pygame.sprite.LayeredUpdates()
 
         # Create the Starting area, may be moved into 'stages' later
-        self.area = Area(self, "area_map_terrain_layer.csv", None, stage="start")
+        self.area = Area(self, None, stage="start")
         # self.build_collision_objects_to_draw()
         # self.enemy_test = Enemy(self, 20,15)
         # self.enemy_test2 = Enemy(self, 2,15)
@@ -69,9 +62,11 @@ class Engine:
                 self.playing = False
                 self.running = False
 
+
     def update(self):
         # all_sprites consists of player, ground and blocks
         self.all_sprites.update()
+
 
     def build_terrain(self):
         for layer in self.area.map.tiled_map:
@@ -79,8 +74,8 @@ class Engine:
                 for x, y, image in layer.tiles():
                     Ground(self, x , y, image=image)
 
+
     def build_collisions(self):
-        from src.core.camera import camera
         for layer in self.area.map.tiled_map:
             if layer.name =="Collision":
                 for x, y, image in layer.tiles():
@@ -91,19 +86,18 @@ class Engine:
                         print(f"tile_type: {tile_type} - this can represent type f enemy, npc etc")
                     Block(self, x , y, image=image)
 
+
     def draw(self):
         # todo, can we fill the screen with a repeating image instead of block colour
-        self.screen.fill(GREEN)
+        self.screen.fill(DARK_GREEN)
         # todo add the background/terrain to a group and set the layer
         # Draw background items like the tiles
-        # for b in self.background_drawables:
-        #     b.draw(self.screen)
-
         self.all_sprites.draw(self.screen)
         self.blocks.draw(self.screen)
         self.enemies.draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
+
 
     def main(self):
         while self.playing:
@@ -112,8 +106,10 @@ class Engine:
             self.draw()
         self.running = False
 
+
     def game_over(self):
         pass
+
 
     def intro_screen(self):
         pass
