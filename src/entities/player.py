@@ -64,6 +64,18 @@ class Player(pygame.sprite.Sprite):
                            self.engine.char_test_spritesheet.get_sprite(64, 64, self.width, self.height)
                            ]
 
+        # self.mask = None
+
+    # def draw(self):
+    #     # bounding box to visualise the collisions
+    #     pygame.draw.rect(self.engine.screen, pygame.Color('red'), (self.rect.x, self.rect.y, self.width, self.height), 1)
+    #
+    #     # create a mask around the image and draw it
+    #     self.mask = pygame.mask.from_surface(self.image)
+    #     mask_outline = self.mask.outline()
+    #     pygame.draw.lines(self.image, "blue", True, mask_outline, 5)
+
+
     def update(self):
         self.movement()
         self.animate()
@@ -89,7 +101,6 @@ class Player(pygame.sprite.Sprite):
             self.x_change -= PLAYER_SPEED
             self.facing = 'left'
         if keys[pygame.K_RIGHT]:
-            print("RIGHT KEY")
             for sprite in self.engine.all_sprites:
                 sprite.rect.x -= PLAYER_SPEED
             self.x_change += PLAYER_SPEED
@@ -110,6 +121,7 @@ class Player(pygame.sprite.Sprite):
 
     def collide_enemies(self):
         hits = pygame.sprite.spritecollide(self, self.engine.enemies, False)
+        # hits = pygame.sprite.spritecollide(self, self.engine.enemies, False, pygame.sprite.collide_mask)
         if hits:
             # removes from allsprites groups
             self.kill()
@@ -118,12 +130,12 @@ class Player(pygame.sprite.Sprite):
 
     def collide_blocks(self, direction):
         if direction == 'x':
+            # hits = pygame.sprite.spritecollide(self, self.engine.blocks, False, pygame.sprite.collide_mask)
             hits = pygame.sprite.spritecollide(self, self.engine.blocks, False)
             if hits:
                 # pygame.mixer.Sound.play(test_sound)
                 # if we're moving right, and colliding, we put the character next to the block we collided with
                 if self.x_change > 0:
-                    print("x right")
                     self.rect.x = hits[0].rect.left - self.rect.width
                     for sprite in self.engine.all_sprites:
                         sprite.rect.x += PLAYER_SPEED

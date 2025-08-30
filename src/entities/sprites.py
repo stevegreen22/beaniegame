@@ -25,35 +25,78 @@ class Spritesheet:
         y = y * (TILE_SIZE + spacing) + margin  # // now in pixels
         return x, y
 
-class Trap(pygame.sprite.Sprite):
-    def __init__(self, engine, x, y, tile_id=None, image=None):
+class Entity(pygame.sprite.Sprite):
+    def __init__(self, engine, x, y, image=None, tile_properties=None,):
+        super().__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.engine = engine
-        self._layer = TRAP_LAYER
 
-        self.groups = self.engine.all_sprites, self.engine.traps
-        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.engine = engine
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
-        self.tile_id = tile_id
+        self.properties = tile_properties
         self.image = image
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
+
+class Trap (Entity):
+    def __init__(self, engine, x, y, image=None, tile_properties=None):
+        super().__init__(engine, x, y, image, tile_properties)
+        self._layer = TRAP_LAYER
+        self.groups = [self.engine.all_sprites, self.engine.traps]
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+
+class NPC (Entity):
+    def __init__(self, engine, x, y, image=None, tile_properties=None):
+        super().__init__(engine, x, y, image, tile_properties)
+        self._layer = NPC_LAYER
+        self.groups = [self.engine.all_sprites, self.engine.npcs]
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+class Block (Entity):
+    def __init__(self, engine, x, y, image=None, tile_properties=None):
+        super().__init__(engine, x, y, image, tile_properties)
+        self._layer = BLOCK_LAYER
+        self.groups = [self.engine.all_sprites, self.engine.blocks]
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        # if self.image is None:
+        #     if tile_id is None:
+        #         self.image = self.engine.terrain_spritesheet.get_sprite(960, 448, self.width, self.height)
+        #     else:
+        #         image_coords = self.engine.terrain_spritesheet.get_sprite_co_ordinates_by_tile_id(tile_id, 32)
+        #         self.image = (
+        #             self.engine.terrain_spritesheet.get_sprite(image_coords[0], image_coords[1], self.width, self.height))
+        # else:
+        #     self.image = self.image
+        # self.image = self.game.terrain_spritesheet.get_sprite(960, 448, self.width, self.height)
+
+class Ground(Entity):
+    def __init__(self, engine, x, y, image=None, tile_properties=None):
+        super().__init__(engine, x, y, image, tile_properties)
+        self._layer = GROUND_LAYER
+
+        self.groups = self.engine.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, engine, x, y, tile_id=None, image=None, enemy_type=None):
+    def __init__(self, engine, x, y, image=None, tile_properties=None):
         pygame.sprite.Sprite.__init__(self)
         self.engine = engine
         self._layer = ENEMY_LAYER
 
         self.groups = self.engine.all_sprites, self.engine.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.properties = tile_properties
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
@@ -69,9 +112,8 @@ class Enemy(pygame.sprite.Sprite):
         # moves back and forth between 7 and 30 pixels
         self.max_travel = random.randint(32, 96)
 
-        self.tile_id = tile_id
-        self.image = self.engine.main_character_spritesheet.get_sprite(0, 0, self.width, self.height).convert_alpha()
-        self.image.set_colorkey(WHITE)
+        self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 0, self.width, self.height).convert()
+        self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -99,85 +141,5 @@ class Enemy(pygame.sprite.Sprite):
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
                 self.facing = "left"
-
-
-class NPC(pygame.sprite.Sprite):
-    def __init__(self, engine, x, y, tile_id=None, image=None):
-        pygame.sprite.Sprite.__init__(self)
-        self.engine = engine
-        self._layer = NPC_LAYER
-
-        self.groups = self.engine.all_sprites, self.engine.npcs
-        pygame.sprite.Sprite.__init__(self, self.groups)
-
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-
-        self.tile_id = tile_id
-        self.image = image
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
-class Block (pygame.sprite.Sprite):
-    def __init__(self, engine, x, y, tile_id=None, image=None):
-        self.engine = engine
-        self._layer = BLOCK_LAYER
-
-        self.groups = self.engine.all_sprites, self.engine.blocks
-        pygame.sprite.Sprite.__init__(self, self.groups)
-
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-
-        self.tile_id = tile_id
-        self.image = image
-        # if self.image is None:
-        #     if tile_id is None:
-        #         self.image = self.engine.terrain_spritesheet.get_sprite(960, 448, self.width, self.height)
-        #     else:
-        #         image_coords = self.engine.terrain_spritesheet.get_sprite_co_ordinates_by_tile_id(tile_id, 32)
-        #         self.image = (
-        #             self.engine.terrain_spritesheet.get_sprite(image_coords[0], image_coords[1], self.width, self.height))
-        # else:
-        #     self.image = self.image
-        # self.image = self.game.terrain_spritesheet.get_sprite(960, 448, self.width, self.height)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
-class Ground(pygame.sprite.Sprite):
-    def __init__(self, engine, x, y, image, tile_id=None):
-        self.engine = engine
-        self._layer = GROUND_LAYER
-
-        self.groups = self.engine.all_sprites
-        pygame.sprite.Sprite.__init__(self, self.groups)
-
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-
-        self.image = image
-        self.tile_id = tile_id
-        # if tile_id is None:
-        #     self.image = self.engine.terrain_spritesheet.get_sprite(64, 352, self.width, self.height)
-        # else:
-        #     image_coords = self.engine.terrain_spritesheet.get_sprite_co_ordinates_by_tile_id(tile_id, 32)
-        #     self.image = (self.engine.terrain_spritesheet.get_sprite(image_coords[0], image_coords[1], self.width, self.height))
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
-
-
 
 

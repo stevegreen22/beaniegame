@@ -31,7 +31,8 @@ class Map:
 
     def get_stage_map(self, stage):
         if stage == "start":
-            map_filename = f"{map_folder_location}/tmx/area1_withobjects.tmx"
+            # map_filename = f"{map_folder_location}/tmx/area1_withobjects.tmx"
+            map_filename = f"{map_folder_location}/tmx/area_1_main.tmx"
             # map_filename = f"{map_folder_location}/tmx/{stagebla}.tmx"
             tiled_map = load_pygame(map_filename)
             return tiled_map

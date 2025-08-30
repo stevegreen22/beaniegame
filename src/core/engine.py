@@ -4,7 +4,7 @@ from pytmx import pytmx, TiledElement
 from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK, FPS, GREEN, TILE_SIZE, DARK_GREEN
 from src.core.area import Area
 from src.entities.player import Player
-from src.entities.sprites import Spritesheet, Ground, Block, Enemy
+from src.entities.sprites import Spritesheet, Ground, Block, Enemy, NPC, Trap
 
 engine = None
 default_width = WINDOW_WIDTH
@@ -16,7 +16,6 @@ class Engine:
         global engine
         engine = self
 
-        # self.active_objs = []
         # self.usables = []
         # self.effects = []
 
@@ -31,8 +30,7 @@ class Engine:
         self.char_test_spritesheet = Spritesheet('assets/generic/char_test.png')
         # self.char_test_spritesheet = Spritesheet('assets/EditedSprites/PandaCharacter.png')
         # self.terrain_spritesheet = Spritesheet('../../assets/generic/terrain.png')
-        # self.main_character_spritesheet = Spritesheet('../../assets/characters/main_character_male/Character_Walk.png')
-        self.collision_objects_to_draw = []
+        self.main_enemy_spritesheet = Spritesheet('assets/generic/enemy.png')
 
 
     def new(self):
@@ -43,6 +41,8 @@ class Engine:
         self.blocks = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
+        self.npcs = pygame.sprite.LayeredUpdates()
+        self.traps = pygame.sprite.LayeredUpdates()
 
         # Create the Starting area, may be moved into 'stages' later
         self.area = Area(self, None, stage="start")
@@ -55,36 +55,44 @@ class Engine:
         self.build_collisions()
         self.player = Player(self, 10, 10)
 
-
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
 
-
     def update(self):
         # all_sprites consists of player, ground and blocks
         self.all_sprites.update()
 
-
     def build_terrain(self):
         for layer in self.area.map.tiled_map:
-            if layer.name =="Background" or layer.name =="Background2":
+            if (layer.name =="GroundLayer" or
+                    layer.name == "GroundLayerMid" or
+                    layer.name == "GroundLayerFore"):
                 for x, y, image in layer.tiles():
                     Ground(self, x , y, image=image)
 
-
     def build_collisions(self):
         for layer in self.area.map.tiled_map:
-            if layer.name =="Collision":
+            if layer.name =="Collision" or layer.name == "CollisionMid":
                 for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 2)
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 3)
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
-                        tile_type = tile_properties['collision']
-                        print(f"tile_type: {tile_type} - this can represent type f enemy, npc etc")
-                    Block(self, x , y, image=image)
+                        print(f"Tile Properties: {tile_properties}")
+                        tile_type = tile_properties['type']
+                        if tile_type == "mob":
+                            Enemy(self, x, y, image=image, tile_properties=tile_properties)
+                        # elif tile_type == "animal":
+                        #     Animal(self, x, y, image=image, properties=tile_properties)
+                        elif tile_type == "npc":
+                            NPC(self, x, y, image=image, tile_properties=tile_properties)
+                        elif tile_type == "trap":
+                            Trap(self, x, y, image=image, tile_properties=tile_properties)
+                    else:
+                        Block(self, x , y, image=image)
+
 
 
     def draw(self):
@@ -95,7 +103,11 @@ class Engine:
         self.all_sprites.draw(self.screen)
         self.blocks.draw(self.screen)
         self.enemies.draw(self.screen)
+        self.npcs.draw(self.screen)
+        self.traps.draw(self.screen)
+
         self.clock.tick(FPS)
+        # self.player.draw()
         pygame.display.update()
 
 
