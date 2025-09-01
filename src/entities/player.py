@@ -44,6 +44,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        self.static_down_image = self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height)
+        self.static_up_image = self.engine.main_player_spritesheet.get_sprite(0, 32, self.width, self.height)
+        self.static_left_image = self.engine.main_player_spritesheet.get_sprite(0, 96, self.width, self.height)
+        self.static_right_image = self.engine.main_player_spritesheet.get_sprite(0, 64, self.width, self.height)
+
         self.down_animations = [self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height),
                            self.engine.main_player_spritesheet.get_sprite(32, 0, self.width, self.height),
                            self.engine.main_player_spritesheet.get_sprite(64, 0, self.width, self.height)
@@ -85,9 +90,6 @@ class Player(pygame.sprite.Sprite):
 
         self.x_change = 0
         self.y_change = 0
-        # from beanie_game.src.core.camera import camera
-        # camera.x = self.x - camera.width / 2
-        # camera.y = self.y - camera.height / 2
 
     def movement(self):
         from src.core.camera import camera
@@ -156,7 +158,7 @@ class Player(pygame.sprite.Sprite):
     def animate(self):
         if self.facing == 'down':
             if self.y_change == 0:
-                self.image = self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height)
+                self.image = self.static_down_image
             else:
                 self.image = self.down_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
@@ -165,7 +167,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.facing == 'up':
             if self.y_change == 0:
-                self.image = self.engine.main_player_spritesheet.get_sprite(0, 32, self.width, self.height)
+                self.image = self.static_up_image
             else:
                 self.image = self.up_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
@@ -174,7 +176,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.facing == 'left':
             if self.x_change == 0:
-                self.image = self.engine.main_player_spritesheet.get_sprite(0, 96, self.width, self.height)
+                self.image = self.static_left_image
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
@@ -183,7 +185,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.facing == 'right':
             if self.x_change == 0:
-                self.image = self.engine.main_player_spritesheet.get_sprite(0, 64, self.width, self.height)
+                self.image = self.static_right_image
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
