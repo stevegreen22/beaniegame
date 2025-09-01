@@ -14,7 +14,6 @@ class Spritesheet:
         sprite = pygame.Surface((width, height))
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         sprite.set_colorkey(BLACK)
-        # panda black parts invisible
         return sprite
 
     # todo: more elegant way to get columns, store sprite data in the obj
@@ -40,10 +39,6 @@ class Entity(pygame.sprite.Sprite):
         self.properties = tile_properties
         self.image = image
 
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
 
 class Trap (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
@@ -52,6 +47,9 @@ class Trap (Entity):
         self.groups = [self.engine.all_sprites, self.engine.traps]
         pygame.sprite.Sprite.__init__(self, self.groups)
 
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
 class NPC (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
@@ -60,6 +58,160 @@ class NPC (Entity):
         self.groups = [self.engine.all_sprites, self.engine.npcs]
         pygame.sprite.Sprite.__init__(self, self.groups)
 
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+animal_props = {"chicken" : {
+                    "speed" : 2, "max_health" : 100,"friendly": "True",
+                    "image_folder": "chicken",
+                    "audio_folder": "location",
+                    "image_names": ["0.png", "1.png"],
+                    "max_travel_distance" : 10, #distance that animal can move when activated
+                    "activation_distance" : 10, #distance to player before movement
+                    "item_drop_on_death" : "True", #lookup from list
+                    "sprite_0_xy" : [64,32],
+                    "sprite_1_xy" : [96,32],
+                    },
+                "rabbit" : {
+                    "speed" : 3, "max_health" : 100,"friendly": "True",
+                    "image_folder": "rabbit",
+                    "audio_folder": "location",
+                    "image_names": ["0.png", "1.png"],
+                    "max_travel_distance" : 10, #distance that animal can move when activated
+                    "activation_distance" : 10, #distance to player before movement
+                    "item_drop_on_death" : "True", #lookup from list
+                    "sprite_0_xy" : [64,64],
+                    "sprite_1_xy" : [96,64],
+                    },
+                "hedgehog" : {
+                    "speed" : 1, "max_health" : 100,"friendly": "True",
+                    "image_folder": "hedgehog",
+                    "audio_folder": "location",
+                    "image_names": ["0.png", "1.png"],
+                    "max_travel_distance" : 10, #distance that animal can move when activated
+                    "activation_distance" : 10, #distance to player before movement
+                    "item_drop_on_death" : "True", #lookup from list
+                    "sprite_0_xy": [64, 128],
+                    "sprite_1_xy": [96, 128],
+                },
+                "capybara" : {
+                    "speed" : 1, "max_health" : 100,"friendly": "True",
+                    "image_folder": "chicken",
+                    "audio_folder": "location",
+                    "image_names": ["0.png", "1.png"],
+                    "max_travel_distance" : 10, #distance that animal can move when activated
+                    "activation_distance" : 10, #distance to player before movement
+                    "item_drop_on_death" : "True", #lookup from list
+                    "sprite_0_xy": [0, 128],
+                    "sprite_1_xy": [32, 128],
+                }
+}
+animal_drops = {
+            "chicken": { "type": "chicken_meat", "quantity" : 1},
+            "rabbit": { "type": "rabbit_meat", "quantity" : 1},
+            "hedgehog": { "type": "hedgehog_meat", "quantity" : 1},
+            "capybara": { "type": None, "quantity" : 0},
+            }
+
+
+class Animal (Entity):
+    def __init__(self, engine, x, y, image=None, tile_properties=None):
+        super().__init__(engine, x, y, image, tile_properties)
+        self._layer = ANIMAL_LAYER
+        self.groups = [self.engine.all_sprites, self.engine.animals]
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.animal_name = self.properties["name"]
+        # setting speed here fails to get passed in to the move method.
+        self.animal_speed = animal_props[self.animal_name]["speed"]
+
+        self.build_animal()
+
+        self.x_change = 0
+        self.y_change = 0
+
+        self.facing = random.choice(["left", "right"])
+        self.animation_loop = 1
+        self.movement_loop = 0
+        self.animal_speed = None
+        # moves back and forth between 12 and 64 pixels
+        self.max_travel = random.randint(12, 64)
+
+        self.sprite_0_xy = animal_props[self.animal_name]["sprite_0_xy"]
+        self.sprite_1_xy = animal_props[self.animal_name]["sprite_1_xy"]
+        self.left_animations = [
+            self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
+            self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height),
+        ]
+        self.right_animations = [
+            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
+            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height), True, False)
+        ]
+
+        # Set a default image to save calling it in the animation loop when not moving
+        # could/should be a left and right facing but for now this is fine.
+        self.image = self.left_animations[0]
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    # Get the tile properties, from that determine type of animal and from there
+    # get the sprites and set the movement range
+    # chicken for example, speed slow, move little, but want it animated when within
+    # a certain distance so that will need to be checked also.
+    def build_animal(self):
+        animal_max_health = animal_props[self.animal_name]["max_health"]
+        if animal_props[self.animal_name]["item_drop_on_death"] == "True":
+            drop = animal_drops[self.animal_name]["type"]
+            qty = animal_drops[self.animal_name]["quantity"]
+
+    # todo: update spritesheet so all animals are facing left by default.
+    def animate(self):
+        if self.facing == "left":
+            # image for standing still
+            if self.x_change == 0:
+                self.image = self.image
+            else:
+                self.image = self.left_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.1  # every ten frames we change image
+                if self.animation_loop >= 2:
+                    self.animation_loop = 1
+
+        if self.facing == "right":
+            # image for standing still
+            if self.x_change == 0:
+                self.image = self.image
+            else:
+                self.image = self.right_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.1  # every ten frames we change image
+                if self.animation_loop >= 2:
+                    self.animation_loop = 1
+
+    def update(self):
+        self.movement()
+        self.animate()
+        self.rect.x += self.x_change
+        self.rect.y += self.y_change
+
+        self.x_change = 0
+        self.y_change = 0
+
+    # every frame we subtract from x and movement loop
+    # if below max travel we change direction
+    def movement(self):
+        if self.facing == "left":
+            self.x_change -= 1#self.animal_speed
+            self.movement_loop -= 1
+            if self.movement_loop <= -self.max_travel:
+                self.facing = "right"
+        if self.facing == "right":
+            self.x_change += 1#self.animal_speed
+            self.movement_loop += 1
+            if self.movement_loop >= self.max_travel:
+                self.facing = "left"
+
+
 class Block (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
         super().__init__(engine, x, y, image, tile_properties)
@@ -67,6 +219,9 @@ class Block (Entity):
         self.groups = [self.engine.all_sprites, self.engine.blocks]
         pygame.sprite.Sprite.__init__(self, self.groups)
 
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
         # if self.image is None:
         #     if tile_id is None:
         #         self.image = self.engine.terrain_spritesheet.get_sprite(960, 448, self.width, self.height)
@@ -86,6 +241,9 @@ class Ground(Entity):
         self.groups = self.engine.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
@@ -112,6 +270,15 @@ class Enemy(pygame.sprite.Sprite):
         # moves back and forth between 7 and 30 pixels
         self.max_travel = random.randint(32, 96)
 
+        self.left_animations = [self.engine.main_enemy_spritesheet.get_sprite(0, 96, self.width, self.height),
+                                self.engine.main_enemy_spritesheet.get_sprite(32, 96, self.width, self.height),
+                                self.engine.main_enemy_spritesheet.get_sprite(64, 96, self.width, self.height)
+                                ]
+        self.right_animations = [self.engine.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height),
+                                 self.engine.main_enemy_spritesheet.get_sprite(32, 64, self.width, self.height),
+                                 self.engine.main_enemy_spritesheet.get_sprite(64, 64, self.width, self.height)
+                                 ]
+
         self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 0, self.width, self.height).convert()
         self.image.set_colorkey(BLACK)
 
@@ -121,7 +288,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         self.movement()
-        # self.animate()
+        self.animate()
         self.rect.x += self.x_change
         self.rect.y += self.y_change
 
@@ -142,4 +309,22 @@ class Enemy(pygame.sprite.Sprite):
             if self.movement_loop >= self.max_travel:
                 self.facing = "left"
 
+    def animate(self):
+        if self.facing == 'left':
+            if self.x_change == 0:
+                self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 96, self.width, self.height)
+            else:
+                self.image = self.left_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.1 #every ten frames we change image
+                if self.animation_loop >= 3:
+                    self.animation_loop = 1
+
+        if self.facing == 'right':
+            if self.x_change == 0:
+                self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height)
+            else:
+                self.image = self.right_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.1 #every ten frames we change image
+                if self.animation_loop >= 3:
+                    self.animation_loop = 1
 

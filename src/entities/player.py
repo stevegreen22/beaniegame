@@ -34,34 +34,31 @@ class Player(pygame.sprite.Sprite):
         yy = math.floor(tileID / columnCount) #// in tiles
         yy = yy * (TILE_SIZE + spacing) + margin #// now in pixels
 
-        picture = self.engine.char_test_spritesheet.get_sprite(xx, yy, self.width, self.height)
-        # picture = self.game.main_character_spritesheet.get_sprite(xx, yy, self.width, self.height)
-        # picture = self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height)
+        picture = self.engine.main_player_spritesheet.get_sprite(xx, yy, self.width, self.height)
 
         x_ratio = self.width/16
         y_ratio = self.height/16
-        # self.image = (pygame.transform.scale(picture,(self.width - x_ratio, self.height - y_ratio)))
         self.image = (pygame.transform.scale(picture,(self.width - x_ratio, self.height - y_ratio)))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.down_animations = [self.engine.char_test_spritesheet.get_sprite(0,0, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(32,0, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(64,0, self.width, self.height)
+        self.down_animations = [self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(32, 0, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(64, 0, self.width, self.height)
         ]
-        self.up_animations = [self.engine.char_test_spritesheet.get_sprite(0, 32, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(32, 32, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(64, 32, self.width, self.height)
+        self.up_animations = [self.engine.main_player_spritesheet.get_sprite(0, 32, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(32, 32, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(64, 32, self.width, self.height)
                            ]
-        self.left_animations = [self.engine.char_test_spritesheet.get_sprite(0, 96, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(32, 96, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(64, 96, self.width, self.height)
+        self.left_animations = [self.engine.main_player_spritesheet.get_sprite(0, 96, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(32, 96, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(64, 96, self.width, self.height)
                            ]
-        self.right_animations = [self.engine.char_test_spritesheet.get_sprite(0, 64, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(32, 64, self.width, self.height),
-                           self.engine.char_test_spritesheet.get_sprite(64, 64, self.width, self.height)
+        self.right_animations = [self.engine.main_player_spritesheet.get_sprite(0, 64, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(32, 64, self.width, self.height),
+                           self.engine.main_player_spritesheet.get_sprite(64, 64, self.width, self.height)
                            ]
 
         # self.mask = None
@@ -159,7 +156,7 @@ class Player(pygame.sprite.Sprite):
     def animate(self):
         if self.facing == 'down':
             if self.y_change == 0:
-                self.image = self.engine.char_test_spritesheet.get_sprite(0, 0, self.width, self.height)
+                self.image = self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height)
             else:
                 self.image = self.down_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
@@ -168,7 +165,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.facing == 'up':
             if self.y_change == 0:
-                self.image = self.engine.char_test_spritesheet.get_sprite(0, 32, self.width, self.height)
+                self.image = self.engine.main_player_spritesheet.get_sprite(0, 32, self.width, self.height)
             else:
                 self.image = self.up_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
@@ -177,7 +174,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.facing == 'left':
             if self.x_change == 0:
-                self.image = self.engine.char_test_spritesheet.get_sprite(0, 96, self.width, self.height)
+                self.image = self.engine.main_player_spritesheet.get_sprite(0, 96, self.width, self.height)
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
@@ -186,7 +183,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.facing == 'right':
             if self.x_change == 0:
-                self.image = self.engine.char_test_spritesheet.get_sprite(0, 64, self.width, self.height)
+                self.image = self.engine.main_player_spritesheet.get_sprite(0, 64, self.width, self.height)
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image

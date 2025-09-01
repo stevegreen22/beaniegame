@@ -4,7 +4,7 @@ from pytmx import pytmx, TiledElement
 from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK, FPS, GREEN, TILE_SIZE, DARK_GREEN
 from src.core.area import Area
 from src.entities.player import Player
-from src.entities.sprites import Spritesheet, Ground, Block, Enemy, NPC, Trap
+from src.entities.sprites import Spritesheet, Ground, Block, Enemy, NPC, Trap, Animal
 
 engine = None
 default_width = WINDOW_WIDTH
@@ -26,12 +26,9 @@ class Engine:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        # self.character_spritesheet = Spritesheet('../../assets/generic/character.png')
-        self.char_test_spritesheet = Spritesheet('assets/generic/char_test.png')
-        # self.char_test_spritesheet = Spritesheet('assets/EditedSprites/PandaCharacter.png')
-        # self.terrain_spritesheet = Spritesheet('../../assets/generic/terrain.png')
-        self.main_enemy_spritesheet = Spritesheet('assets/generic/enemy.png')
-
+        self.main_player_spritesheet = Spritesheet('assets/characters/player/main_character.png')
+        self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/basic_player_clone.png')
+        self.main_animal_spritesheet = Spritesheet('assets/animals/animal_spritesheet.png')
 
     def new(self):
         # new game starts
@@ -43,6 +40,7 @@ class Engine:
         self.attacks = pygame.sprite.LayeredUpdates()
         self.npcs = pygame.sprite.LayeredUpdates()
         self.traps = pygame.sprite.LayeredUpdates()
+        self.animals = pygame.sprite.LayeredUpdates()
 
         # Create the Starting area, may be moved into 'stages' later
         self.area = Area(self, None, stage="start")
@@ -84,8 +82,8 @@ class Engine:
                         tile_type = tile_properties['type']
                         if tile_type == "mob":
                             Enemy(self, x, y, image=image, tile_properties=tile_properties)
-                        # elif tile_type == "animal":
-                        #     Animal(self, x, y, image=image, properties=tile_properties)
+                        elif tile_type == "animal":
+                            Animal(self, x, y, tile_properties=tile_properties)
                         elif tile_type == "npc":
                             NPC(self, x, y, image=image, tile_properties=tile_properties)
                         elif tile_type == "trap":
