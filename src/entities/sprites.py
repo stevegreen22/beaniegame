@@ -143,10 +143,12 @@ class Animal (Entity):
         self.left_animations = [
             self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
             self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height),
+            self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
         ]
         self.right_animations = [
             pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
-            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height), True, False)
+            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height), True, False),
+            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
         ]
 
         # Set a default image to save calling it in the animation loop when not moving
@@ -175,7 +177,7 @@ class Animal (Entity):
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1  # every ten frames we change image
-                if self.animation_loop >= 2:
+                if self.animation_loop >= 3:
                     self.animation_loop = 1
 
         if self.facing == "right":
@@ -185,7 +187,7 @@ class Animal (Entity):
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1  # every ten frames we change image
-                if self.animation_loop >= 2:
+                if self.animation_loop >= 3:
                     self.animation_loop = 1
 
     def update(self):
