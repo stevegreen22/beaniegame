@@ -83,22 +83,7 @@ ah, but also we need to know the start position of move left/right, move up/down
 """
 #
 
-enemy_props = { "whitey" :{},
-                "bluey" :{},
-                "pinky" :{},
-                # slime will use the same set of sprites for all animation regardless of axis
-                "slime" :{
-                    "speed" : 3, "max_health" : 100,
-                    "audio_folder" : "<<location>>",
-                    "max_travel_distance": 10,  # distance that animal can move when activated
-                    "activation_distance": 10,  # distance to player before movement
-                    "item_drop_on_death": "True",  # lookup from list
-                    "movement_animation_quantity": 6, # number of movement sprites
-                    "left_right_movement_start_coord" : (0, 64), #starting coordinate in sprite sheet
-                    "up_down_movement_start_coord" : None, # not used with slime
-                    "attack_animation_quantity" : None, #not yet configured
-                }
-                }
+
 animal_props = {"chicken" : {
                     "speed" : 2, "max_health" : 100, "friendly": "True",
                     "audio_folder": "location",
@@ -134,6 +119,15 @@ animal_props = {"chicken" : {
                     "item_drop_on_death" : "True", #lookup from list
                     "sprite_0_xy": [0, 128],
                     "sprite_1_xy": [32, 128],
+                },
+                "duck" : {
+                    "speed" : 1, "max_health" : 100,"friendly": "True",
+                    "audio_folder": "location",
+                    "max_travel_distance" : 8, #distance that animal can move when activated
+                    "activation_distance" : 10, #distance to player before movement
+                    "item_drop_on_death" : "True", #lookup from list
+                    "sprite_0_xy": [128, 32],
+                    "sprite_1_xy": [160, 32],
                 }
 }
 animal_drops = {
@@ -141,6 +135,7 @@ animal_drops = {
             "rabbit": { "type": "rabbit_meat", "quantity" : 1},
             "hedgehog": { "type": "hedgehog_meat", "quantity" : 1},
             "capybara": { "type": None, "quantity" : 0},
+            "duck": { "type": None, "quantity" : 0},
             }
 
 
@@ -297,30 +292,81 @@ class Block (Entity):
 class Ground(Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
         super().__init__(engine, x, y, image, tile_properties)
-        self._layer = GROUND_LAYER
 
-        self.groups = self.engine.all_sprites
+        if tile_properties is None:
+            self._layer = GROUND_LAYER
+            self.groups = self.engine.all_sprites
+        else: # presumption here that if a tile has properties it will be a tree...
+            self._layer = FOREGROUND_TREES
+            self.groups = self.engine.all_sprites, self.engine.foreground_trees
+
+
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
-class Enemy(pygame.sprite.Sprite):
+enemy_props = { "whitey" :{
+                    "speed": 3, "max_health": 100,
+                    "audio_folder": "<<location>>",
+                    "max_travel_distance": 10,  # distance that animal can move when activated
+                    "activation_distance": 10,  # distance to player before movement
+                    "item_drop_on_death": "True",  # lookup from list
+                    "movement_animation_quantity": 6,  # number of movement sprites
+                    "left_right_movement_start_coord": (0, 64),  # starting coordinate in sprite sheet
+                    "up_down_movement_start_coord": None,  # not used with slime
+                    "attack_animation_quantity": None,  # not yet configured
+                },
+                "bluey" :{
+                    "speed": 3, "max_health": 100,
+                    "audio_folder": "<<location>>",
+                    "max_travel_distance": 10,  # distance that animal can move when activated
+                    "activation_distance": 10,  # distance to player before movement
+                    "item_drop_on_death": "True",  # lookup from list
+                    "movement_animation_quantity": 6,  # number of movement sprites
+                    "left_right_movement_start_coord": (0, 64),  # starting coordinate in sprite sheet
+                    "up_down_movement_start_coord": None,  # not used with slime
+                    "attack_animation_quantity": None,  # not yet configured
+                },
+                "pinky" :{
+                    "speed": 3, "max_health": 100,
+                    "audio_folder": "<<location>>",
+                    "max_travel_distance": 10,  # distance that animal can move when activated
+                    "activation_distance": 10,  # distance to player before movement
+                    "item_drop_on_death": "True",  # lookup from list
+                    "movement_animation_quantity": 6,  # number of movement sprites
+                    "left_right_movement_start_coord": (0, 64),  # starting coordinate in sprite sheet
+                    "up_down_movement_start_coord": None,  # not used with slime
+                    "attack_animation_quantity": None,  # not yet configured
+                },
+                # slime will use the same set of sprites for all animation regardless of axis
+                "slime" :{
+                    "speed" : 3, "max_health" : 100,
+                    "audio_folder" : "<<location>>",
+                    "max_travel_distance": 10,  # distance that animal can move when activated
+                    "activation_distance": 10,  # distance to player before movement
+                    "item_drop_on_death": "True",  # lookup from list
+                    "movement_animation_quantity": 6, # number of movement sprites
+                    "left_right_movement_start_coord" : (0, 64), #starting coordinate in sprite sheet
+                    "up_down_movement_start_coord" : None, # not used with slime
+                    "attack_animation_quantity" : None, #not yet configured
+                }
+                }
+
+class Enemy(Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
-        pygame.sprite.Sprite.__init__(self)
-        self.engine = engine
+        super().__init__(engine, x, y, image, tile_properties)
         self._layer = ENEMY_LAYER
 
         self.groups = self.engine.all_sprites, self.engine.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-        self.properties = tile_properties
+        self.enemy_name = self.properties["name"]
+        self.enemy_speed = None #enemy_props[self.enemy_name]["speed"]
+        self.max_health = enemy_props[self.enemy_name]["max_health"]
 
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
+        # self.build_enemy() add extra things like whether it can shoot, drops, etc etc
 
         self.x_change = 0
         self.y_change = 0
@@ -331,16 +377,17 @@ class Enemy(pygame.sprite.Sprite):
         # moves back and forth between 7 and 30 pixels
         self.max_travel = random.randint(32, 96)
 
-        self.left_animations = [self.engine.main_enemy_spritesheet.get_sprite(0, 96, self.width, self.height),
-                                self.engine.main_enemy_spritesheet.get_sprite(32, 96, self.width, self.height),
-                                self.engine.main_enemy_spritesheet.get_sprite(64, 96, self.width, self.height)
-                                ]
-        self.right_animations = [self.engine.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height),
-                                 self.engine.main_enemy_spritesheet.get_sprite(32, 64, self.width, self.height),
-                                 self.engine.main_enemy_spritesheet.get_sprite(64, 64, self.width, self.height)
-                                 ]
+        # obtain the number of sprites
+        self.movement_sprites = enemy_props[self.enemy_name]["movement_animation_quantity"]
+        self.start_xy = enemy_props[self.enemy_name]["left_right_movement_start_coord"]
+        self.move_sprites = []
+        for i in range(self.movement_sprites):
+            self.move_sprites.append(self.engine.main_enemy_spritesheet.get_sprite(self.start_xy[0] + (TILE_SIZE * i), self.start_xy[1], self.width, self.height))
 
-        self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 0, self.width, self.height).convert()
+        self.right_animations = self.move_sprites
+        self.left_animations = [pygame.transform.flip(img, True, False) for img in self.move_sprites]
+
+        self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height).convert()
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
@@ -373,19 +420,19 @@ class Enemy(pygame.sprite.Sprite):
     def animate(self):
         if self.facing == 'left':
             if self.x_change == 0:
-                self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 96, self.width, self.height)
+                self.image = self.image
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
-                if self.animation_loop >= 3:
+                if self.animation_loop >= 5:
                     self.animation_loop = 1
 
         if self.facing == 'right':
             if self.x_change == 0:
-                self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height)
+                self.image = self.image
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1 #every ten frames we change image
-                if self.animation_loop >= 3:
+                if self.animation_loop >= 5:
                     self.animation_loop = 1
 

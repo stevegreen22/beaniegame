@@ -19,6 +19,12 @@
    <frame tileid="13" duration="100"/>
   </animation>
  </tile>
+ <tile id="14">
+  <properties>
+   <property name="name" value="duck"/>
+   <property name="type" value="animal"/>
+  </properties>
+ </tile>
  <tile id="22">
   <properties>
    <property name="name" value="rabbit"/>

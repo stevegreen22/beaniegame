@@ -28,8 +28,8 @@ class Engine:
 
         self.main_player_spritesheet = Spritesheet('assets/characters/player/main_character.png')
         # self.main_player_spritesheet = Spritesheet('assets/characters/player/red_main_spritesheet.png')
-        # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/monster_spritesheet.png')
-        self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
+        self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/monster_spritesheet.png')
+        # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
         # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/basic_player_clone.png')
         self.main_animal_spritesheet = Spritesheet('assets/animals/animal_spritesheet.png')
 
@@ -44,6 +44,7 @@ class Engine:
         self.npcs = pygame.sprite.LayeredUpdates()
         self.traps = pygame.sprite.LayeredUpdates()
         self.animals = pygame.sprite.LayeredUpdates()
+        self.foreground_trees = pygame.sprite.LayeredUpdates() #trees that the player can walk behind.
 
         # Create the Starting area, may be moved into 'stages' later
         self.area = Area(self, None, stage="start")
@@ -68,17 +69,27 @@ class Engine:
 
     def build_terrain(self):
         for layer in self.area.map.tiled_map:
-            if (layer.name =="GroundLayer" or
-                    layer.name == "GroundLayerMid" or
+            if (layer.name =="GroundLayer" or layer.name == "GroundLayerMid" or
                     layer.name == "GroundLayerFore"):
                 for x, y, image in layer.tiles():
                     Ground(self, x , y, image=image)
+        # build foreground trees
+        for layer in self.area.map.tiled_map:
+            if layer.name == "TreeForeground":
+                for x, y, image in layer.tiles():
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 5) #tree foreground layer
+                    tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
+                    if tile_properties is not None and tile_properties["type"] == "tree":
+                        Ground(self, x , y, image=image, tile_properties=tile_properties)
+
+
 
     def build_collisions(self):
         for layer in self.area.map.tiled_map:
             if layer.name =="Collision" or layer.name == "CollisionMid":
                 for x, y, image in layer.tiles():
                     tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 3)
+                    # todo: this is only getting properties from layer 3, colision mid.
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
                         print(f"Tile Properties: {tile_properties}")
