@@ -1,6 +1,8 @@
 Beanie Game
 
 - [ ] Intractable chests 
+- [ ] Not all animals will want to be scaled down
+- [ ] fix the scaling rect to be drawn at bottom axis
 - [ ] Chest collisions
 - [ ] Animals activate in a certain range
 - [ ] Animals can have random y movement also
@@ -38,8 +40,7 @@ Beanie Game
 - [ ] Animate the mushrooms
 - [ ] Find out how to scale the images both up and down
 - [ ] Chickens should be smaller etc
-- [ ] Each animal
-- [ ] Has a scale down percentage
+- [ ] Each animal has a scale down percentage
 - [ ] Figure out why the speed is not pulled through from the obj
 - [ ] implement basic save and load functionality 
 - [ ] 

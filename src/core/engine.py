@@ -27,7 +27,10 @@ class Engine:
         self.running = True
 
         self.main_player_spritesheet = Spritesheet('assets/characters/player/main_character.png')
-        self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/basic_player_clone.png')
+        # self.main_player_spritesheet = Spritesheet('assets/characters/player/red_main_spritesheet.png')
+        # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/monster_spritesheet.png')
+        self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
+        # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/basic_player_clone.png')
         self.main_animal_spritesheet = Spritesheet('assets/animals/animal_spritesheet.png')
 
     def new(self):

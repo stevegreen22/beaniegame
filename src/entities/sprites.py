@@ -62,11 +62,46 @@ class NPC (Entity):
         self.rect.x = self.x
         self.rect.y = self.y
 
+"""
+the enemies and npcs 'may' have a differing number of sprites per animation, the 
+same for some other animals and traps.
+they may also have differing number of attack sprites.
+Potential solution, while it isn't super pretty may be:
+in each properties include an int for how many movement sprites either 4 for all 
+cardinal directions or 4 per left/right and 4 per up/down for example.
+this number could also be the 'animation loop' variable.
+
+"movement_animation_quantity": 4,
+"attack_animation_quantity" : 5
+
+then when building the sprites we can loop through and then mutliply by the width
+rather than having img_0_x, img_0_y, img....n_x etc.
+we will just need to record the starting position of the initial sprite.
+ah, but also we need to know the start position of move left/right, move up/down and attack sprites
+
+
+"""
+#
+
+enemy_props = { "whitey" :{},
+                "bluey" :{},
+                "pinky" :{},
+                # slime will use the same set of sprites for all animation regardless of axis
+                "slime" :{
+                    "speed" : 3, "max_health" : 100,
+                    "audio_folder" : "<<location>>",
+                    "max_travel_distance": 10,  # distance that animal can move when activated
+                    "activation_distance": 10,  # distance to player before movement
+                    "item_drop_on_death": "True",  # lookup from list
+                    "movement_animation_quantity": 6, # number of movement sprites
+                    "left_right_movement_start_coord" : (0, 64), #starting coordinate in sprite sheet
+                    "up_down_movement_start_coord" : None, # not used with slime
+                    "attack_animation_quantity" : None, #not yet configured
+                }
+                }
 animal_props = {"chicken" : {
-                    "speed" : 2, "max_health" : 100,"friendly": "True",
-                    "image_folder": "chicken",
+                    "speed" : 2, "max_health" : 100, "friendly": "True",
                     "audio_folder": "location",
-                    "image_names": ["0.png", "1.png"],
                     "max_travel_distance" : 10, #distance that animal can move when activated
                     "activation_distance" : 10, #distance to player before movement
                     "item_drop_on_death" : "True", #lookup from list
@@ -75,9 +110,7 @@ animal_props = {"chicken" : {
                     },
                 "rabbit" : {
                     "speed" : 3, "max_health" : 100,"friendly": "True",
-                    "image_folder": "rabbit",
                     "audio_folder": "location",
-                    "image_names": ["0.png", "1.png"],
                     "max_travel_distance" : 10, #distance that animal can move when activated
                     "activation_distance" : 10, #distance to player before movement
                     "item_drop_on_death" : "True", #lookup from list
@@ -86,9 +119,7 @@ animal_props = {"chicken" : {
                     },
                 "hedgehog" : {
                     "speed" : 1, "max_health" : 100,"friendly": "True",
-                    "image_folder": "hedgehog",
                     "audio_folder": "location",
-                    "image_names": ["0.png", "1.png"],
                     "max_travel_distance" : 10, #distance that animal can move when activated
                     "activation_distance" : 10, #distance to player before movement
                     "item_drop_on_death" : "True", #lookup from list
@@ -97,9 +128,7 @@ animal_props = {"chicken" : {
                 },
                 "capybara" : {
                     "speed" : 1, "max_health" : 100,"friendly": "True",
-                    "image_folder": "chicken",
                     "audio_folder": "location",
-                    "image_names": ["0.png", "1.png"],
                     "max_travel_distance" : 10, #distance that animal can move when activated
                     "activation_distance" : 10, #distance to player before movement
                     "item_drop_on_death" : "True", #lookup from list
@@ -138,23 +167,50 @@ class Animal (Entity):
         # moves back and forth between 12 and 64 pixels
         self.max_travel = random.randint(12, 64)
 
+        # get the spritesheet locations by using the animal properties
         self.sprite_0_xy = animal_props[self.animal_name]["sprite_0_xy"]
         self.sprite_1_xy = animal_props[self.animal_name]["sprite_1_xy"]
+
+        # scaled test, y coor isn't correct
         self.left_animations = [
-            self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
-            self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height),
-            self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
+            pygame.transform.scale(
+                self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width,
+                                                               self.height), (self.width - 8, self.height - 8)),
+            pygame.transform.scale(
+                self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width,
+                                                               self.height), (self.width - 8, self.height - 8)),
+            pygame.transform.scale(
+                self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width,
+                                                               self.height), (self.width - 8, self.height - 8)),
         ]
+
         self.right_animations = [
-            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
-            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height), True, False),
-            pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
+            pygame.transform.scale(pygame.transform.flip(
+                self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width,
+                                                               self.height), True, False),(self.width - 8, self.height - 8)),
+            pygame.transform.scale(pygame.transform.flip(
+                self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width,
+                                                               self.height), True, False),(self.width - 8, self.height - 8)),
+            pygame.transform.scale(pygame.transform.flip(
+                self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width,
+                                                               self.height), True, False),(self.width - 8, self.height - 8)),
         ]
+
+        # self.left_animations = [
+        #     self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
+        #     self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height),
+        #     self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height),
+        # ]
+        # self.right_animations = [
+        #     pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
+        #     pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_1_xy[0], self.sprite_1_xy[1], self.width, self.height), True, False),
+        #     pygame.transform.flip(self.engine.main_animal_spritesheet.get_sprite(self.sprite_0_xy[0], self.sprite_0_xy[1], self.width, self.height), True, False),
+        # ]
 
         # Set a default image to save calling it in the animation loop when not moving
         # could/should be a left and right facing but for now this is fine.
         self.image = self.left_animations[0]
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()#(bottomleft=(self.sprite_0_xy[0]-16, self.sprite_0_xy[1]-16))
         self.rect.x = self.x
         self.rect.y = self.y
 
@@ -170,11 +226,15 @@ class Animal (Entity):
 
     # todo: update spritesheet so all animals are facing left by default.
     def animate(self):
+        test = 8
         if self.facing == "left":
             # image for standing still
             if self.x_change == 0:
-                self.image = self.image
+                self.image = pygame.transform.scale(self.image(self.width-test, self.height-test))
+                # self.image = self.image
             else:
+                # before_scale = self.left_animations[math.floor(self.animation_loop)]
+                # self.image = pygame.transform.scale(before_scale, (self.width -test, self.height-test))
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1  # every ten frames we change image
                 if self.animation_loop >= 3:
@@ -212,7 +272,6 @@ class Animal (Entity):
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
                 self.facing = "left"
-
 
 class Block (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
