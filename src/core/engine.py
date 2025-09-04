@@ -83,7 +83,8 @@ class Engine:
                         Ground(self, x , y, image=image, tile_properties=tile_properties)
 
 
-
+    # Todo: CollisionMid shoudl be renamed for collision mobs, all mob in map should be on this
+    # layer.  the '3' below dictates the tiles coming from that layer.
     def build_collisions(self):
         for layer in self.area.map.tiled_map:
             if layer.name =="Collision" or layer.name == "CollisionMid":

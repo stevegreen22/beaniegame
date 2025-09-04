@@ -19,7 +19,7 @@ Beanie Game
 - [ ] House or village to be added
 - [ ] Add npc 
 - [ ] Add questline thing
-- [ ] Slime enemies
+- [ x ] Slime enemies
 - [ ] Some enemies will chase
 - [ ] Some enemies will shoot 
 - [ ] Enable traps
@@ -43,4 +43,5 @@ Beanie Game
 - [ ] Each animal has a scale down percentage
 - [ ] Figure out why the speed is not pulled through from the obj
 - [ ] implement basic save and load functionality 
-- [ ] 
+- [ ] npcs need to be scaled up
+- [ ] steering algorithm for wandering bunnies etc needs to be implemented

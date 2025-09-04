@@ -2,6 +2,8 @@ import pygame
 from config.config import *
 import math
 import random
+from random import randint, uniform
+vec = pygame.math.Vector2
 
 # todo: create a list of sprite sheets here with relevant info such as columns and pertinent ids
 
@@ -138,6 +140,11 @@ animal_drops = {
             "duck": { "type": None, "quantity" : 0},
             }
 
+MAX_SPEED = 1
+MAX_FORCE = 0.4
+RAND_TARGET_TIME = 500
+WANDER_RING_DISTANCE = 150
+WANDER_RING_RADIUS = 100
 
 class Animal (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
@@ -208,6 +215,12 @@ class Animal (Entity):
         self.rect = self.image.get_rect()#(bottomleft=(self.sprite_0_xy[0]-16, self.sprite_0_xy[1]-16))
         self.rect.x = self.x
         self.rect.y = self.y
+        # self.rect.bottomleft = self.x - 16, self.y - 16 works but needs improving.
+
+    #     wander test
+        self.pos = vec(self.rect.x, self.rect.y)
+        self.vel = vec(MAX_SPEED, 0).rotate(uniform(0, 360))
+
 
     # Get the tile properties, from that determine type of animal and from there
     # get the sprites and set the movement range
@@ -245,7 +258,7 @@ class Animal (Entity):
                 if self.animation_loop >= 3:
                     self.animation_loop = 1
 
-    def update(self):
+    def update_old(self):
         self.movement()
         self.animate()
         self.rect.x += self.x_change
@@ -253,6 +266,7 @@ class Animal (Entity):
 
         self.x_change = 0
         self.y_change = 0
+
 
     # every frame we subtract from x and movement loop
     # if below max travel we change direction
@@ -267,6 +281,39 @@ class Animal (Entity):
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
                 self.facing = "left"
+
+
+#     test wander code
+    def seek(self, target):
+        self.desired = (target - self.pos).normalize() * MAX_SPEED
+        steer = (self.desired - self.vel)
+        if steer.length() > MAX_FORCE:
+            steer.scale_to_length(MAX_FORCE)
+        return steer
+
+    def wander_improved(self):
+        future = self.pos + self.vel.normalize() * WANDER_RING_DISTANCE
+        target = future + vec(WANDER_RING_RADIUS, 0).rotate(uniform(0, 360))
+        self.displacement = target
+        return self.seek(target)
+
+    def update(self):
+        self.acc = self.wander_improved()
+        # equations of motion
+        self.vel += self.acc
+        if self.vel.length() > MAX_SPEED:
+            self.vel.scale_to_length(MAX_SPEED)
+        self.pos += self.vel
+        # if self.pos.x > self.width:
+        #     self.pos.x = 0
+        # if self.pos.x < 0:
+        #     self.pos.x = self.width
+        # if self.pos.y > self.height:
+        #     self.pos.y = 0
+        # if self.pos.y < 0:
+        #     self.pos.y = self.height
+        self.rect.center = self.pos
+
 
 class Block (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
