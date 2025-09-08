@@ -1,10 +1,13 @@
 import pygame
-from pytmx import pytmx, TiledElement
 
-from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK, FPS, GREEN, TILE_SIZE, DARK_GREEN
+from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS, DARK_GREEN
 from src.core.area import Area
 from src.entities.player import Player
-from src.entities.sprites import Spritesheet, Ground, Block, Enemy, NPC, Trap, Animal, AnimatedTerrain
+from src.entities.sprites.animated_terrain import AnimatedTerrain
+from src.entities.sprites.animal_sprites import Animal
+from src.entities.sprites.enemy_sprites import Enemy
+from src.entities.sprites.static_sprites import Block,Ground
+from src.entities.sprites.sprite_manager import Spritesheet
 
 engine = None
 default_width = WINDOW_WIDTH

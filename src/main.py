@@ -1,7 +1,4 @@
 import pygame
-from config.config import *
-from src.entities.sprites import Ground, Block, Spritesheet
-from src.entities.player import Player
 import sys
 from core.engine import Engine
 
