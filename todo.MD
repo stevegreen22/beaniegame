@@ -45,3 +45,5 @@ Beanie Game
 - [ ] implement basic save and load functionality 
 - [ ] npcs need to be scaled up
 - [ ] steering algorithm for wandering bunnies etc needs to be implemented
+- [ ] animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
+- 

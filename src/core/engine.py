@@ -4,7 +4,7 @@ from pytmx import pytmx, TiledElement
 from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK, FPS, GREEN, TILE_SIZE, DARK_GREEN
 from src.core.area import Area
 from src.entities.player import Player
-from src.entities.sprites import Spritesheet, Ground, Block, Enemy, NPC, Trap, Animal
+from src.entities.sprites import Spritesheet, Ground, Block, Enemy, NPC, Trap, Animal, AnimatedTerrain
 
 engine = None
 default_width = WINDOW_WIDTH
@@ -81,6 +81,22 @@ class Engine:
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None and tile_properties["type"] == "tree":
                         Ground(self, x , y, image=image, tile_properties=tile_properties)
+        # build animated blocks such as water and sand
+        for layer in self.area.map.tiled_map:
+            if layer.name == "Collision":
+                for x, y, image in layer.tiles():
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 4)  # collision layer
+                    tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
+                    if tile_properties is not None:
+                        print(f"Tile Properties: {tile_properties}")
+                        tile_type = tile_properties['type']
+                        if tile_type == "animated_block":
+                            terrain = tile_properties['terrain']
+                            if terrain == "sand":
+                                AnimatedTerrain(self, x, y, tile_properties=tile_properties)
+                            elif terrain == "water":
+                                AnimatedTerrain(self, x, y, tile_properties=tile_properties)
+
 
 
     # Todo: CollisionMid shoudl be renamed for collision mobs, all mob in map should be on this
@@ -90,7 +106,7 @@ class Engine:
             if layer.name =="Collision" or layer.name == "CollisionMid":
                 for x, y, image in layer.tiles():
                     tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 3)
-                    # todo: this is only getting properties from layer 3, colision mid.
+                    # todo: this is only getting properties from layer 3, collision mid.
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
                         print(f"Tile Properties: {tile_properties}")
@@ -104,7 +120,9 @@ class Engine:
                         elif tile_type == "trap":
                             Trap(self, x, y, image=image, tile_properties=tile_properties)
                     else:
-                        Block(self, x , y, image=image)
+                        pass
+                        # this is where water was originally being created.
+                        # Block(self, x , y, image=image)
 
 
 
