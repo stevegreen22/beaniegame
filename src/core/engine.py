@@ -6,7 +6,8 @@ from src.entities.player import Player
 from src.entities.sprites.animated_terrain import AnimatedTerrain
 from src.entities.sprites.animals import Animal
 from src.entities.sprites.enemies import Enemy
-from src.entities.sprites.statics import Block,Ground
+from src.entities.sprites.statics import Block,Ground, Trap
+from src.entities.sprites.npcs import NPC
 from src.entities.sprites.sprite_manager import Spritesheet
 
 engine = None

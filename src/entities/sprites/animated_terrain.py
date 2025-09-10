@@ -61,9 +61,7 @@ class AnimatedTerrain(Entity):
         # if animated_tile_properties is None:
         #     animated_tile_properties = self.build_list_of_tile_ids_and_corresponding_coordinates()
 
-
         self.tile_id = tile_properties["id"]
-
 
         # look up the details from the id in the dict
         self.image_1_xy = ()

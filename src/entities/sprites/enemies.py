@@ -13,7 +13,7 @@ enemy_props = { "whitey" :{
                     "activation_distance": 10,  # distance to player before movement
                     "item_drop_on_death": "True",  # lookup from list
                     "movement_animation_quantity": 6,  # number of movement sprites
-                    "left_right_movement_start_coord": (0, 64),  # starting coordinate in sprite sheet
+                    "left_right_movement_start_coord": (0, 192),  # starting coordinate in sprite sheet
                     "up_down_movement_start_coord": None,  # not used with slime
                     "attack_animation_quantity": None,  # not yet configured
                 },
@@ -24,7 +24,7 @@ enemy_props = { "whitey" :{
                     "activation_distance": 10,  # distance to player before movement
                     "item_drop_on_death": "True",  # lookup from list
                     "movement_animation_quantity": 6,  # number of movement sprites
-                    "left_right_movement_start_coord": (0, 64),  # starting coordinate in sprite sheet
+                    "left_right_movement_start_coord": (0, 256),  # starting coordinate in sprite sheet
                     "up_down_movement_start_coord": None,  # not used with slime
                     "attack_animation_quantity": None,  # not yet configured
                 },
@@ -35,7 +35,7 @@ enemy_props = { "whitey" :{
                     "activation_distance": 10,  # distance to player before movement
                     "item_drop_on_death": "True",  # lookup from list
                     "movement_animation_quantity": 6,  # number of movement sprites
-                    "left_right_movement_start_coord": (0, 64),  # starting coordinate in sprite sheet
+                    "left_right_movement_start_coord": (0, 128),  # starting coordinate in sprite sheet
                     "up_down_movement_start_coord": None,  # not used with slime
                     "attack_animation_quantity": None,  # not yet configured
                 },
