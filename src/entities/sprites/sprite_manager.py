@@ -25,7 +25,7 @@ class Spritesheet:
 
     #     pull image from sprite sheet
     def get_sprite(self, x, y, width, height):
-        sprite = pygame.Surface((width, height))
+        sprite = pygame.Surface((width, height))#.convert_alpha()
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         sprite.set_colorkey(BLACK)
         return sprite

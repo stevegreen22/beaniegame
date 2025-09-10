@@ -1,6 +1,6 @@
 import pygame
 
-from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS, DARK_GREEN
+from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS, DARK_GREEN, TILE_LAYERS
 from src.core.area import Area
 from src.entities.player import Player
 from src.entities.sprites.animated_terrain import AnimatedTerrain
@@ -36,6 +36,7 @@ class Engine:
         # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
         # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/basic_player_clone.png')
         self.main_animal_spritesheet = Spritesheet('assets/animals/animal_spritesheet.png')
+        self.main_terrain_spritesheet = Spritesheet('assets/maps/tmx/img/terrain.png')
 
     def new(self):
         # new game starts
@@ -49,6 +50,8 @@ class Engine:
         self.traps = pygame.sprite.LayeredUpdates()
         self.animals = pygame.sprite.LayeredUpdates()
         self.foreground_trees = pygame.sprite.LayeredUpdates() #trees that the player can walk behind.
+        self.animated_terrain = pygame.sprite.LayeredUpdates()
+        self.collision_group = pygame.sprite.LayeredUpdates()
 
         # Create the Starting area, may be moved into 'stages' later
         self.area = Area(self, None, stage="start")
@@ -79,16 +82,18 @@ class Engine:
         # build foreground trees
         for layer in self.area.map.tiled_map:
             if layer.name == "TreeForeground":
+                layer_id = TILE_LAYERS["TreeForeground"]
                 for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 5) #tree foreground layer
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id) #tree foreground layer
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None and tile_properties["type"] == "tree":
                         Ground(self, x , y, image=image, tile_properties=tile_properties)
         # build animated blocks such as water and sand
         for layer in self.area.map.tiled_map:
             if layer.name == "CollisionBlocks" or layer.name == "CollisionBlocks2":
+                layer_id = TILE_LAYERS[layer.name]
                 for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 3)  # collision layer
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id)  # collision layer
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
                         print(f"Tile Properties: {tile_properties}")
@@ -99,6 +104,10 @@ class Engine:
                                 AnimatedTerrain(self, x, y, tile_properties=tile_properties)
                             elif terrain == "water":
                                 AnimatedTerrain(self, x, y, tile_properties=tile_properties)
+                    # normal generic collision block such as the wall, pond or lava...
+                    else:
+                        Block(self, x, y, image=image, tile_properties=tile_properties)
+
 
 
 
@@ -107,8 +116,9 @@ class Engine:
     def build_collisions(self):
         for layer in self.area.map.tiled_map:
             if layer.name =="CollisionMobs":
+                layer_id = TILE_LAYERS["CollisionMobs"]
                 for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 4)
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id)
                     # todo: this is only getting properties from layer 4, collision mid.
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
@@ -139,6 +149,7 @@ class Engine:
         self.enemies.draw(self.screen)
         self.npcs.draw(self.screen)
         self.traps.draw(self.screen)
+        self.animated_terrain.draw(self.screen)
 
         self.clock.tick(FPS)
         # self.player.draw()

@@ -35,3 +35,12 @@ DARK_YELLOW = (255, 255, 0)
 DARK_WHITE = (255, 255, 255)
 DARK_PURPLE = (255, 0, 255)
 DARK_BROWN = (102, 51, 51)
+
+TILE_LAYERS = {
+    "BaseTerrain" : 0,
+    "BaseTerrain2" : 1,
+    "CollisionBlocks" :2,
+    "CollisionBlocks2" :3,
+    "CollisionMobs" :4,
+    "TreeForeground" :5
+}
