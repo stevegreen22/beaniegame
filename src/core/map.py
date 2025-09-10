@@ -1,7 +1,7 @@
 import pygame
 from pytmx.util_pygame import load_pygame
 from config.config import TILE_SIZE
-from src.entities.sprites.static_sprites import Ground, Block
+from src.entities.sprites.statics import Ground, Block
 
 map_folder_location = "assets/maps"
 image_path = "assets/maps/img"
