@@ -73,8 +73,7 @@ class Engine:
 
     def build_terrain(self):
         for layer in self.area.map.tiled_map:
-            if (layer.name =="GroundLayer" or layer.name == "GroundLayerMid" or
-                    layer.name == "GroundLayerFore"):
+            if layer.name =="BaseTerrain" or layer.name == "BaseTerrain2":
                 for x, y, image in layer.tiles():
                     Ground(self, x , y, image=image)
         # build foreground trees
@@ -87,9 +86,9 @@ class Engine:
                         Ground(self, x , y, image=image, tile_properties=tile_properties)
         # build animated blocks such as water and sand
         for layer in self.area.map.tiled_map:
-            if layer.name == "Collision":
+            if layer.name == "CollisionBlocks" or layer.name == "CollisionBlocks2":
                 for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 4)  # collision layer
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 3)  # collision layer
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
                         print(f"Tile Properties: {tile_properties}")
@@ -107,10 +106,10 @@ class Engine:
     # layer.  the '3' below dictates the tiles coming from that layer.
     def build_collisions(self):
         for layer in self.area.map.tiled_map:
-            if layer.name =="Collision" or layer.name == "CollisionMid":
+            if layer.name =="CollisionMobs":
                 for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 3)
-                    # todo: this is only getting properties from layer 3, collision mid.
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, 4)
+                    # todo: this is only getting properties from layer 4, collision mid.
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
                         print(f"Tile Properties: {tile_properties}")
