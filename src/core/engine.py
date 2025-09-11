@@ -77,8 +77,16 @@ class Engine:
     def build_terrain(self):
         for layer in self.area.map.tiled_map:
             if layer.name =="BaseTerrain" or layer.name == "BaseTerrain2":
+                layer_id = TILE_LAYERS[layer.name]
                 for x, y, image in layer.tiles():
+                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id)  # collision layer
+                    tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
+                    if tile_properties is not None:
+                        if tile_properties['type'] == "animated_block" and tile_properties['terrain'] == "sand":
+                            AnimatedTerrain(self, x, y, tile_properties=tile_properties)
                     Ground(self, x , y, image=image)
+
+
         # build foreground trees
         for layer in self.area.map.tiled_map:
             if layer.name == "TreeForeground":

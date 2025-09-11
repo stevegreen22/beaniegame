@@ -77,10 +77,7 @@ class Animal (Entity):
             # image for standing still
             if self.x_change == 0:
                 self.image = pygame.transform.scale(self.image, (self.width-test, self.height-test))
-                # self.image = self.image
             else:
-                # before_scale = self.left_animations[math.floor(self.animation_loop)]
-                # self.image = pygame.transform.scale(before_scale, (self.width -test, self.height-test))
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1  # every ten frames we change image
                 if self.animation_loop >= 3:

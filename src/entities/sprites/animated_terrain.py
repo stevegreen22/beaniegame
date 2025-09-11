@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from config.config import *
 from src.entities.sprites.sprite_manager import Entity
@@ -117,7 +119,7 @@ class AnimatedTerrain(Entity):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         # build the list once
-        self.animated_tile_properties = animated_tile_properties#self.build_list_of_tile_ids_and_corresponding_coordinates()#animated_tile_properties
+        self.animated_tile_properties = animated_tile_properties
 
         self.tile_id = tile_properties["id"]
 
@@ -127,13 +129,31 @@ class AnimatedTerrain(Entity):
         self.image_2_xy = self.animated_tile_properties[id_2]
 
         self.images = [
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width, self.height)
+            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width, self.height),
+            self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
+            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width,
+                                                            self.height),
+            self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width,
+                                                            self.height),
         ]
         self.image = self.images[0]
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self.animation_loop = 1
+        self.movement_loop = 0
+
+    def update(self):
+        self.animate()
+
+
+    def animate(self):
+        self.image = self.images[math.floor(self.animation_loop)]
+        self.animation_loop += 0.1  # every ten frames we change image
+        if self.animation_loop >= 4:
+            self.animation_loop = 1
 
     """
     tiles start at 109, the counterpart is ten tiles across so 109 is mapped with 119 for example
