@@ -34,7 +34,6 @@ class Engine:
         # self.main_player_spritesheet = Spritesheet('assets/characters/player/red_main_spritesheet.png')
         self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/monster_spritesheet.png')
         # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
-        # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/basic_player_clone.png')
         self.main_animal_spritesheet = Spritesheet('assets/animals/animal_spritesheet.png')
         self.main_terrain_spritesheet = Spritesheet('assets/maps/tmx/img/terrain.png')
 
@@ -52,14 +51,10 @@ class Engine:
         self.foreground_trees = pygame.sprite.LayeredUpdates() #trees that the player can walk behind.
         self.animated_terrain = pygame.sprite.LayeredUpdates()
         self.collision_group = pygame.sprite.LayeredUpdates()
+        self.player_group = pygame.sprite.LayeredUpdates()
 
         # Create the Starting area, may be moved into 'stages' later
         self.area = Area(self, None, stage="start")
-        # self.build_collision_objects_to_draw()
-        # self.enemy_test = Enemy(self, 20,15)
-        # self.enemy_test2 = Enemy(self, 2,15)
-        # self.enemy_test3 = Enemy(self, 7,10)
-        # self.enemy_test4 = Enemy(self, 20,20)
         self.build_terrain()
         self.build_collisions()
         self.player = Player(self, 10, 10)
@@ -76,30 +71,19 @@ class Engine:
 
     def build_terrain(self):
         for layer in self.area.map.tiled_map:
-            if layer.name =="BaseTerrain" or layer.name == "BaseTerrain2":
-                layer_id = TILE_LAYERS[layer.name]
+            layer_id = TILE_LAYERS[layer.name]
+            if layer.name =="BaseTerrain" or layer.name == "BaseTerrain2" or layer.name == "TreeForeground":
                 for x, y, image in layer.tiles():
                     tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id)  # collision layer
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
                     if tile_properties is not None:
                         if tile_properties['type'] == "animated_block" and tile_properties['terrain'] == "sand":
                             AnimatedTerrain(self, x, y, tile_properties=tile_properties)
+                        if tile_properties["type"] == "tree":
+                            Ground(self, x, y, image=image, tile_properties=tile_properties)
                     Ground(self, x , y, image=image)
 
-
-        # build foreground trees
-        for layer in self.area.map.tiled_map:
-            if layer.name == "TreeForeground":
-                layer_id = TILE_LAYERS["TreeForeground"]
-                for x, y, image in layer.tiles():
-                    tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id) #tree foreground layer
-                    tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
-                    if tile_properties is not None and tile_properties["type"] == "tree":
-                        Ground(self, x , y, image=image, tile_properties=tile_properties)
-        # build animated blocks such as water and sand
-        for layer in self.area.map.tiled_map:
             if layer.name == "CollisionBlocks" or layer.name == "CollisionBlocks2":
-                layer_id = TILE_LAYERS[layer.name]
                 for x, y, image in layer.tiles():
                     tile_id = self.area.map.tiled_map.get_tile_gid(x, y, layer_id)  # collision layer
                     tile_properties = self.area.map.tiled_map.get_tile_properties_by_gid(tile_id)
@@ -107,16 +91,14 @@ class Engine:
                         print(f"Tile Properties: {tile_properties}")
                         tile_type = tile_properties['type']
                         if tile_type == "animated_block":
-                            terrain = tile_properties['terrain']
-                            if terrain == "sand":
-                                AnimatedTerrain(self, x, y, tile_properties=tile_properties)
-                            elif terrain == "water":
+                            # terrain = tile_properties['terrain']
+                            # if terrain == "sand":
+                            #     AnimatedTerrain(self, x, y, tile_properties=tile_properties)
+                            if tile_properties['terrain'] == "water":
                                 AnimatedTerrain(self, x, y, tile_properties=tile_properties)
                     # normal generic collision block such as the wall, pond or lava...
                     else:
                         Block(self, x, y, image=image, tile_properties=tile_properties)
-
-
 
 
     # Todo: CollisionMid shoudl be renamed for collision mobs, all mob in map should be on this
@@ -153,12 +135,12 @@ class Engine:
         # todo add the background/terrain to a group and set the layer
         # Draw background items like the tiles
         self.all_sprites.draw(self.screen)
+        self.animated_terrain.draw(self.screen) #needs this to animate sand but can then be walked under by player
         self.blocks.draw(self.screen)
         self.enemies.draw(self.screen)
         self.npcs.draw(self.screen)
         self.traps.draw(self.screen)
-        self.animated_terrain.draw(self.screen)
-
+        self.player_group.draw(self.screen)
         self.clock.tick(FPS)
         # self.player.draw()
         pygame.display.update()
