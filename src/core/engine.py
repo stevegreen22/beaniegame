@@ -35,6 +35,7 @@ class Engine:
         self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/monster_spritesheet.png')
         # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
         self.main_animal_spritesheet = Spritesheet('assets/animals/animal_spritesheet.png')
+        self.rabbit_2_spritesheet = Spritesheet('assets/animals/rabbits.png')
         self.main_terrain_spritesheet = Spritesheet('assets/maps/tmx/img/terrain.png')
 
     def new(self):
@@ -141,6 +142,7 @@ class Engine:
         self.npcs.draw(self.screen)
         self.traps.draw(self.screen)
         self.player_group.draw(self.screen)
+        self.animals.draw(self.screen)
         self.clock.tick(FPS)
         # self.player.draw()
         pygame.display.update()

@@ -77,11 +77,10 @@ class Animal (Entity):
 
     # todo: update spritesheet so all animals are facing left by default.
     def animate(self):
-        test = 0
         if self.facing == "left":
             # image for standing still
             if self.x_change == 0:
-                self.image = pygame.transform.scale(self.image, (self.width-test, self.height-test))
+                self.image = pygame.transform.scale(self.image, (self.width-self.sprite_reduction_pixels, self.height-self.sprite_reduction_pixels))
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1  # every ten frames we change image
@@ -91,7 +90,7 @@ class Animal (Entity):
         if self.facing == "right":
             # image for standing still
             if self.x_change == 0:
-                self.image = pygame.transform.scale(self.image, (self.width - test, self.height - test))
+                self.image = pygame.transform.scale(self.image, (self.width - self.sprite_reduction_pixels, self.height - self.sprite_reduction_pixels))
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1  # every ten frames we change image
