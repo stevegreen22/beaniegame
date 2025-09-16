@@ -1,22 +1,43 @@
 Beanie Game
 
-- [ ] Intractable chests 
+- Player Updates
+  - [ ] Player collision with animals or the ability to attack
+  - [ ] Player attack sword
+  - [ ] Player attack magic - particle tut
+  - [ ] Player inventory
+
+
+- Terrain Updates
+  - [ ] Wider world map
+  - [ ] Create paths and the like with trees or hedges on map
+  - [ ] House or village to be added
+  - [ ] Done - animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
+  - [ ] Exapand on water animation so waterfall flows faster
+  - 
+
+
+- Game Mechanics Updates
+  - [ ] Intractable chests
+  - [ ] Chest collisions
+  - [ ] Start screen
+  - [ ] Game over screen
+  - [ ] Menu buttons
+
+- Sprite Updates
+
+
+
+
+
 - [ ] Not all animals will want to be scaled down
 - [ ] fix the scaling rect to be drawn at bottom axis
-- [ ] Chest collisions
+
 - [ ] Animals activate in a certain range
 - [ ] Animals can have random y movement also
 - [ ] Animal collisions with walls etc
-- [ ] Player collision with animals or the ability to attack
-- [ ] Player attack sword
-- [ ] Player attack magic - particle tut
-- [ ] Player inventory
-- [ ] Start screen
-- [ ] Game over screen
-- [ ] Menu buttons
-- [ ] Wider world map
-- [ ] Create paths and the like with trees or hedges on map
-- [ ] House or village to be added
+
+
+
 - [ ] Add npc 
 - [ ] Add questline thing
 - [ x ] Slime enemies
@@ -45,5 +66,4 @@ Beanie Game
 - [ ] implement basic save and load functionality 
 - [ ] npcs need to be scaled up
 - [ ] steering algorithm for wandering bunnies etc needs to be implemented
-- [ ] animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
-- 
+
