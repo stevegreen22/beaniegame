@@ -23,9 +23,16 @@ class Animal (Entity):
         # get values from properties
         self.animal_name = self.properties["name"]
         if self.animal_name == "rabbit_2":
+            # set the sprite sheet and create the random starting y position
+            # 0,0; 0,64;0,128;0,192;0,256
+            #"start_coord" : (0,0)
             self.animal_spritesheet = self.engine.rabbit_2_spritesheet
+            self.start_xy = (0, random.choice([0,64,128,192,256]))
+            self.animation_speed = random.choice([0.1, 0.2, 0.25])
         else:
             self.animal_spritesheet = self.engine.main_animal_spritesheet
+            self.start_xy = animal_props[self.animal_name]["start_coord"]
+            self.animation_speed = random.choice([0.1, 0.2])
 
         self.animal_speed = animal_props[self.animal_name]["speed"]
         # self.build_animal()
@@ -34,6 +41,7 @@ class Animal (Entity):
         self.y_change = 0
 
         self.facing = random.choice(["left", "right"])
+
         self.animation_loop = 1
         self.movement_loop = 0
         # moves back and forth between 12 and 64 pixels
@@ -42,7 +50,6 @@ class Animal (Entity):
         # get the spritesheet locations by using the animal properties
 
         self.movement_sprites = animal_props[self.animal_name]["animation_quantity"]
-        self.start_xy = animal_props[self.animal_name]["start_coord"]
         self.move_sprites = []
         # build sprites
         self.sprite_reduction_pixels = 0
@@ -59,6 +66,7 @@ class Animal (Entity):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
 
     #     wander test
     #     self.pos = vec(self.rect.x, self.rect.y)
@@ -83,7 +91,7 @@ class Animal (Entity):
                 self.image = pygame.transform.scale(self.image, (self.width-self.sprite_reduction_pixels, self.height-self.sprite_reduction_pixels))
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1  # every ten frames we change image
+                self.animation_loop += self.animation_speed#0.1  # every ten frames we change image
                 if self.animation_loop >= self.movement_sprites: #3
                     self.animation_loop = 1
 
@@ -93,7 +101,7 @@ class Animal (Entity):
                 self.image = pygame.transform.scale(self.image, (self.width - self.sprite_reduction_pixels, self.height - self.sprite_reduction_pixels))
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.1  # every ten frames we change image
+                self.animation_loop += self.animation_speed#0.1  # every ten frames we change image
                 if self.animation_loop >= self.movement_sprites: #3:
                     self.animation_loop = 1
 
