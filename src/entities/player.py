@@ -130,7 +130,7 @@ class Player(pygame.sprite.Sprite):
     def collide_blocks(self, direction):
         if direction == 'x':
             # hits = pygame.sprite.spritecollide(self, self.engine.blocks, False, pygame.sprite.collide_mask)
-            hits = pygame.sprite.spritecollide(self, self.engine.blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.engine.collision_blocks, False)
             if hits:
                 # pygame.mixer.Sound.play(test_sound)
                 # if we're moving right, and colliding, we put the character next to the block we collided with
@@ -143,7 +143,7 @@ class Player(pygame.sprite.Sprite):
                     for sprite in self.engine.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
         if direction == 'y':
-            hits = pygame.sprite.spritecollide(self, self.engine.blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.engine.collision_blocks, False)
             if hits:
                 # moving down
                 if self.y_change > 0:

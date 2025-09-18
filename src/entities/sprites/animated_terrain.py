@@ -56,7 +56,7 @@ class AnimatedTerrain(Entity):
 
         self._layer = GROUND_LAYER
         if tile_properties['terrain'] == 'water':
-            self.groups = [self.engine.all_sprites, self.engine.blocks]
+            self.groups = [self.engine.all_sprites, self.engine.collision_blocks]
         else:
             self.groups = [self.engine.all_sprites, self.engine.animated_terrain]
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -74,10 +74,8 @@ class AnimatedTerrain(Entity):
         self.images = [
             self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width, self.height),
             self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width,
-                                                            self.height),
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width,
-                                                            self.height),
+            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width,self.height),
+            self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
         ]
         self.image = self.images[0]
 

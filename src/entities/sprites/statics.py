@@ -18,7 +18,7 @@ class Block (Entity):
     def __init__(self, engine, x, y, image=None, tile_properties=None):
         super().__init__(engine, x, y, image, tile_properties)
         self._layer = BLOCK_LAYER
-        self.groups = [self.engine.all_sprites, self.engine.blocks, self.engine.collision_group]
+        self.groups = [self.engine.all_sprites, self.engine.collision_blocks, self.engine.collision_group]
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.rect = self.image.get_rect()

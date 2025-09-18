@@ -43,7 +43,7 @@ class Engine:
         self.playing = True
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
-        self.blocks = pygame.sprite.LayeredUpdates()
+        self.collision_blocks = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
         self.npcs = pygame.sprite.LayeredUpdates()
@@ -92,9 +92,6 @@ class Engine:
                         print(f"Tile Properties: {tile_properties}")
                         tile_type = tile_properties['type']
                         if tile_type == "animated_block":
-                            # terrain = tile_properties['terrain']
-                            # if terrain == "sand":
-                            #     AnimatedTerrain(self, x, y, tile_properties=tile_properties)
                             if tile_properties['terrain'] == "water":
                                 AnimatedTerrain(self, x, y, tile_properties=tile_properties)
                     # normal generic collision block such as the wall, pond or lava...
@@ -137,7 +134,7 @@ class Engine:
         # Draw background items like the tiles
         self.all_sprites.draw(self.screen)
         self.animated_terrain.draw(self.screen) #needs this to animate sand but can then be walked under by player
-        self.blocks.draw(self.screen)
+        self.collision_blocks.draw(self.screen)
         self.enemies.draw(self.screen)
         self.npcs.draw(self.screen)
         self.traps.draw(self.screen)

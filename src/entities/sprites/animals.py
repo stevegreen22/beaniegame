@@ -83,12 +83,11 @@ class Animal (Entity):
             drop = animal_drops[self.animal_name]["type"]
             qty = animal_drops[self.animal_name]["quantity"]
 
-    # todo: update spritesheet so all animals are facing left by default.
+
     def animate(self):
         if self.facing == "left":
-            # image for standing still
             if self.x_change == 0:
-                self.image = pygame.transform.scale(self.image, (self.width-self.sprite_reduction_pixels, self.height-self.sprite_reduction_pixels))
+                self.image = self.image
             else:
                 self.image = self.left_animations[math.floor(self.animation_loop)]
                 self.animation_loop += self.animation_speed#0.1  # every ten frames we change image
@@ -96,9 +95,8 @@ class Animal (Entity):
                     self.animation_loop = 1
 
         if self.facing == "right":
-            # image for standing still
             if self.x_change == 0:
-                self.image = pygame.transform.scale(self.image, (self.width - self.sprite_reduction_pixels, self.height - self.sprite_reduction_pixels))
+                self.image = self.image
             else:
                 self.image = self.right_animations[math.floor(self.animation_loop)]
                 self.animation_loop += self.animation_speed#0.1  # every ten frames we change image
@@ -121,11 +119,13 @@ class Animal (Entity):
     def movement(self):
         if self.facing == "left":
             self.x_change -= self.animal_speed
+            self.y_change += random.choice([-1,1])
             self.movement_loop -= 1
             if self.movement_loop <= -self.max_travel:
                 self.facing = "right"
         if self.facing == "right":
             self.x_change += self.animal_speed
+            self.y_change += random.choice([-1,1])
             self.movement_loop += 1
             if self.movement_loop >= self.max_travel:
                 self.facing = "left"
@@ -472,7 +472,6 @@ animal_props = {
         "max_travel_distance": 8,  # distance that animal can move when activated
         "activation_distance": 10,  # distance to player before movement
         "item_drop_on_death": "True",  # lookup from list
-        "start_coord": (0, 0),  # starting coor of first image in sprite sheet
         "animation_quantity": 8,  # number of sprites we're using for the animal animation
     }
 }

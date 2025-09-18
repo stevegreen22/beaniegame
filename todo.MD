@@ -14,7 +14,7 @@ Beanie Game
   - [ ] Wider world map
   - [ ] Create paths and the like with trees or hedges on map
   - [ ] House or village to be added
-  - [ ] Done - animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
+  - [ x ] animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
   - [ ] Expand on water animation so waterfall flows faster
   - [ ] Multiple maps need to be created
   - [ ] Side scroller section, needs physics etc
@@ -45,7 +45,7 @@ Beanie Game
 - [ ] Not all animals will want to be scaled down
 - [ ] fix the scaling rect to be drawn at bottom axis
 - [ ] Animals activate in a certain range
-- [ ] Animals can have random y movement also
+- [ x ] Animals can have random y movement also
 - [ ] Animal collisions with walls etc
 - [ ] Animate the mushrooms
 - [ ] Chickens should be smaller etc
