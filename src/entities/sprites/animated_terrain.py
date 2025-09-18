@@ -1,4 +1,5 @@
 import math
+import random
 
 import pygame
 from config.config import *
@@ -55,15 +56,17 @@ class AnimatedTerrain(Entity):
         super().__init__(engine, x, y, image, tile_properties)
 
         self._layer = GROUND_LAYER
-        if tile_properties['terrain'] == 'water':
+        self.terrain = tile_properties['terrain']
+        if self.terrain == 'water' or self.terrain == 'waterfall':
             self.groups = [self.engine.all_sprites, self.engine.collision_blocks]
         else:
             self.groups = [self.engine.all_sprites, self.engine.animated_terrain]
+
         pygame.sprite.Sprite.__init__(self, self.groups)
+
 
         # build the list once
         self.animated_tile_properties = animated_tile_properties
-
         self.tile_id = tile_properties["id"]
 
         # look up the details from the id in the dict
@@ -92,7 +95,13 @@ class AnimatedTerrain(Entity):
 
     def animate(self):
         self.image = self.images[math.floor(self.animation_loop)]
-        self.animation_loop += 0.1  # every ten frames we change image
+        # todo: do we want random water movement like this?
+        if self.terrain == 'waterfall':
+            animation_speed = random.choice([0.1, 0.15,0.2,0.3])
+        else:
+            animation_speed = random.choice([0.1, 0.15])  # every 10 frames
+
+        self.animation_loop += animation_speed # every ten frames we change image
         if self.animation_loop >= 4:
             self.animation_loop = 1
 

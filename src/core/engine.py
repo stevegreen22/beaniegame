@@ -92,7 +92,7 @@ class Engine:
                         print(f"Tile Properties: {tile_properties}")
                         tile_type = tile_properties['type']
                         if tile_type == "animated_block":
-                            if tile_properties['terrain'] == "water":
+                            if tile_properties['terrain'] == "water" or tile_properties['terrain'] == "waterfall":
                                 AnimatedTerrain(self, x, y, tile_properties=tile_properties)
                     # normal generic collision block such as the wall, pond or lava...
                     else:
