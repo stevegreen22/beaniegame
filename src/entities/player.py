@@ -1,6 +1,8 @@
 import pygame
 import math
 from config.config import PLAYER_LAYER, TILE_SIZE, PLAYER_SPEED
+from src.core.area import Area
+from src.entities.sprites.sprite_manager import Spritesheet
 
 # todo: create a list of sprite sheets here with relevant info such as columns and pertinent ids
 pygame.mixer.init()
@@ -11,8 +13,13 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, engine, x, y):
         self.engine = engine
         self._layer = PLAYER_LAYER
-        self.groups = self.engine.player_group, self.engine.all_sprites
+        self.groups = self.engine.area.map.player_group, self.engine.area.map.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
+
+
+        self.main_player_spritesheet = Spritesheet('assets/characters/player/main_character.png')
+        # self.main_player_spritesheet = Spritesheet('assets/characters/player/red_main_spritesheet.png')
+
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
@@ -34,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         yy = math.floor(tileID / columnCount) #// in tiles
         yy = yy * (TILE_SIZE + spacing) + margin #// now in pixels
 
-        picture = self.engine.main_player_spritesheet.get_sprite(xx, yy, self.width, self.height)
+        picture = self.main_player_spritesheet.get_sprite(xx, yy, self.width, self.height)
 
         x_ratio = self.width/16
         y_ratio = self.height/16
@@ -44,26 +51,26 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.static_down_image = self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height)
-        self.static_up_image = self.engine.main_player_spritesheet.get_sprite(0, 32, self.width, self.height)
-        self.static_left_image = self.engine.main_player_spritesheet.get_sprite(0, 96, self.width, self.height)
-        self.static_right_image = self.engine.main_player_spritesheet.get_sprite(0, 64, self.width, self.height)
+        self.static_down_image = self.main_player_spritesheet.get_sprite(0, 0, self.width, self.height)
+        self.static_up_image = self.main_player_spritesheet.get_sprite(0, 32, self.width, self.height)
+        self.static_left_image = self.main_player_spritesheet.get_sprite(0, 96, self.width, self.height)
+        self.static_right_image = self.main_player_spritesheet.get_sprite(0, 64, self.width, self.height)
 
-        self.down_animations = [self.engine.main_player_spritesheet.get_sprite(0, 0, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(32, 0, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(64, 0, self.width, self.height)
+        self.down_animations = [self.main_player_spritesheet.get_sprite(0, 0, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(32, 0, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(64, 0, self.width, self.height)
         ]
-        self.up_animations = [self.engine.main_player_spritesheet.get_sprite(0, 32, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(32, 32, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(64, 32, self.width, self.height)
+        self.up_animations = [self.main_player_spritesheet.get_sprite(0, 32, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(32, 32, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(64, 32, self.width, self.height)
                            ]
-        self.left_animations = [self.engine.main_player_spritesheet.get_sprite(0, 96, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(32, 96, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(64, 96, self.width, self.height)
+        self.left_animations = [self.main_player_spritesheet.get_sprite(0, 96, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(32, 96, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(64, 96, self.width, self.height)
                            ]
-        self.right_animations = [self.engine.main_player_spritesheet.get_sprite(0, 64, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(32, 64, self.width, self.height),
-                           self.engine.main_player_spritesheet.get_sprite(64, 64, self.width, self.height)
+        self.right_animations = [self.main_player_spritesheet.get_sprite(0, 64, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(32, 64, self.width, self.height),
+                           self.main_player_spritesheet.get_sprite(64, 64, self.width, self.height)
                            ]
 
         # self.mask = None
@@ -95,22 +102,22 @@ class Player(pygame.sprite.Sprite):
         from src.core.camera import camera
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            for sprite in self.engine.all_sprites:
+            for sprite in self.engine.area.map.all_sprites:
                 sprite.rect.x += PLAYER_SPEED
             self.x_change -= PLAYER_SPEED
             self.facing = 'left'
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            for sprite in self.engine.all_sprites:
+            for sprite in self.engine.area.map.all_sprites:
                 sprite.rect.x -= PLAYER_SPEED
             self.x_change += PLAYER_SPEED
             self.facing = 'right'
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            for sprite in self.engine.all_sprites:
+            for sprite in self.engine.area.map.all_sprites:
                 sprite.rect.y += PLAYER_SPEED
             self.y_change -= PLAYER_SPEED
             self.facing = 'up'
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            for sprite in self.engine.all_sprites:
+            for sprite in self.engine.area.map.all_sprites:
                 sprite.rect.y -= PLAYER_SPEED
             self.y_change += PLAYER_SPEED
             self.facing = 'down'
@@ -119,40 +126,44 @@ class Player(pygame.sprite.Sprite):
         camera.y = self.y - camera.height / 2 + 16
 
     def collide_enemies(self):
-        hits = pygame.sprite.spritecollide(self, self.engine.enemies, False)
+        hits = pygame.sprite.spritecollide(self, self.engine.area.map.enemies, False)
         # hits = pygame.sprite.spritecollide(self, self.engine.enemies, False, pygame.sprite.collide_mask)
         if hits:
             # removes from allsprites groups
-            self.kill()
+            # self.kill()
             # exit the game
-            self.engine.playing = False
+            # self.engine.playing = False
+
+            # Todo: this kinda works but should be much better....
+            self.engine.area = Area(self, None, stage="end")
+            self.engine.player = Player(self.engine, 10, 10)
 
     def collide_blocks(self, direction):
         if direction == 'x':
             # hits = pygame.sprite.spritecollide(self, self.engine.blocks, False, pygame.sprite.collide_mask)
-            hits = pygame.sprite.spritecollide(self, self.engine.collision_blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.engine.area.map.collision_blocks, False)
             if hits:
                 # pygame.mixer.Sound.play(test_sound)
                 # if we're moving right, and colliding, we put the character next to the block we collided with
                 if self.x_change > 0:
                     self.rect.x = hits[0].rect.left - self.rect.width
-                    for sprite in self.engine.all_sprites:
+                    for sprite in self.engine.area.map.all_sprites:
                         sprite.rect.x += PLAYER_SPEED
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
-                    for sprite in self.engine.all_sprites:
+                    for sprite in self.engine.area.map.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
         if direction == 'y':
-            hits = pygame.sprite.spritecollide(self, self.engine.collision_blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.engine.area.map.collision_blocks, False)
             if hits:
                 # moving down
                 if self.y_change > 0:
                     self.rect.y = hits[0].rect.top - self.rect.height
-                    for sprite in self.engine.all_sprites:
+                    for sprite in self.engine.area.map.all_sprites:
                         sprite.rect.y += PLAYER_SPEED
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
-                    for sprite in self.engine.all_sprites:
+                    for sprite in self.engine.area.map.all_sprites:
                         sprite.rect.y -= PLAYER_SPEED
 
     def animate(self):

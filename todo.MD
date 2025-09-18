@@ -15,9 +15,10 @@ Beanie Game
   - [ ] Create paths and the like with trees or hedges on map
   - [ ] House or village to be added
   - [ x ] animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
-  - [ ] Expand on water animation so waterfall flows faster
+  - [ x ] Expand on water animation so waterfall flows faster
   - [ ] Multiple maps need to be created
   - [ ] Side scroller section, needs physics etc
+  - [ ] Refactor how we build all the terrain in one loop instead of splitting collision layers, prob needs tile type data
 
 
 - Game Mechanics Updates

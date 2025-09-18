@@ -700,6 +700,16 @@
    <property name="type" value="tree"/>
   </properties>
  </tile>
+ <tile id="1594">
+  <properties>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="1595">
+  <properties>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
  <tile id="1608">
   <properties>
    <property name="ability" value="shoot"/>
@@ -725,6 +735,26 @@
  <tile id="1612">
   <properties>
    <property name="type" value="animal"/>
+  </properties>
+ </tile>
+ <tile id="1658">
+  <properties>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="1659">
+  <properties>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="1723">
+  <properties>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="1787">
+  <properties>
+   <property name="type" value="teleporter"/>
   </properties>
  </tile>
 </tileset>

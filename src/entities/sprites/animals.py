@@ -14,10 +14,10 @@ vec = pygame.math.Vector2
 # WANDER_RING_RADIUS = 100
 
 class Animal (Entity):
-    def __init__(self, engine, x, y, image=None, tile_properties=None):
-        super().__init__(engine, x, y, image, tile_properties)
+    def __init__(self, map, x, y, image=None, tile_properties=None):
+        super().__init__(map, x, y, image, tile_properties)
         self._layer = ANIMAL_LAYER
-        self.groups = [self.engine.all_sprites, self.engine.animals]
+        self.groups = [self.map.all_sprites, self.map.animals]
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         # get values from properties
@@ -26,11 +26,11 @@ class Animal (Entity):
             # set the sprite sheet and create the random starting y position
             # 0,0; 0,64;0,128;0,192;0,256
             #"start_coord" : (0,0)
-            self.animal_spritesheet = self.engine.rabbit_2_spritesheet
+            self.animal_spritesheet = self.map.rabbit_2_spritesheet
             self.start_xy = (0, random.choice([0,64,128,192,256]))
             self.animation_speed = random.choice([0.1, 0.2, 0.25])
         else:
-            self.animal_spritesheet = self.engine.main_animal_spritesheet
+            self.animal_spritesheet = self.map.main_animal_spritesheet
             self.start_xy = animal_props[self.animal_name]["start_coord"]
             self.animation_speed = random.choice([0.1, 0.2])
 

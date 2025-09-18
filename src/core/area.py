@@ -28,12 +28,18 @@ class Area:
     #     return tile_map
     #
     #
-    # def load_file(self, engine, area_file):
-    #     # Read all the data from the file
-    #     # file = open(map_folder_location + "/" + area_file, "r")
-    #     file = open("/Users/sgreen/PycharmProjects/PythonProject1/beanie_game/assets/maps/area_map_terrain_layer.csv", "r")
-    #     data = file.read()
-    #     file.close()
-    #
-    #     # Load the map
-    #     self.map = Map(engine, data, self.tile_types, stage=self.stage)
+    def load_file(self, engine, area_file):
+        # Read all the data from the file
+        # file = open(map_folder_location + "/" + area_file, "r")
+        file = open("/Users/sgreen/PycharmProjects/PythonProject1/beanie_game/assets/maps/area_map_terrain_layer.csv", "r")
+        data = file.read()
+        file.close()
+
+        # Load the map
+        self.map = Map(engine, data, self.tile_types, stage=self.stage)
+
+    # clear out everything for map transitions
+    # def reset_map(self):
+    #     all_groups = []
+    #     for group in all_groups:
+    #         group.empty()

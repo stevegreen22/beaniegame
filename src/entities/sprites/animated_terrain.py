@@ -52,15 +52,15 @@ animated_terrain = {
 
 
 class AnimatedTerrain(Entity):
-    def __init__(self, engine, x, y, image=None, tile_properties=None):
-        super().__init__(engine, x, y, image, tile_properties)
+    def __init__(self, map, x, y, image=None, tile_properties=None):
+        super().__init__(map, x, y, image, tile_properties)
 
         self._layer = GROUND_LAYER
         self.terrain = tile_properties['terrain']
         if self.terrain == 'water' or self.terrain == 'waterfall':
-            self.groups = [self.engine.all_sprites, self.engine.collision_blocks]
+            self.groups = [self.map.all_sprites, self.map.collision_blocks]
         else:
-            self.groups = [self.engine.all_sprites, self.engine.animated_terrain]
+            self.groups = [self.map.all_sprites, self.map.animated_terrain]
 
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -75,10 +75,10 @@ class AnimatedTerrain(Entity):
         self.image_2_xy = self.animated_tile_properties[id_2]
 
         self.images = [
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width, self.height),
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width,self.height),
-            self.engine.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
+            self.map.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width, self.height),
+            self.map.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
+            self.map.main_terrain_spritesheet.get_sprite(self.image_1_xy[0], self.image_1_xy[1], self.width,self.height),
+            self.map.main_terrain_spritesheet.get_sprite(self.image_2_xy[0], self.image_2_xy[1], self.width, self.height),
         ]
         self.image = self.images[0]
 

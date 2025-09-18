@@ -4,11 +4,11 @@ import pygame
 from config.config import *
 
 class Entity(pygame.sprite.Sprite):
-    def __init__(self, engine, x, y, image=None, tile_properties=None,):
+    def __init__(self, map, x, y, image=None, tile_properties=None,):
         super().__init__()
         pygame.sprite.Sprite.__init__(self)
 
-        self.engine = engine
+        self.map = map
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
@@ -22,6 +22,7 @@ class Entity(pygame.sprite.Sprite):
 class Spritesheet:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert_alpha()
+
 
     #     pull image from sprite sheet
     def get_sprite(self, x, y, width, height):

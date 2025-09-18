@@ -54,11 +54,11 @@ enemy_props = { "whitey" :{
                 }
 
 class Enemy(Entity):
-    def __init__(self, engine, x, y, image=None, tile_properties=None):
-        super().__init__(engine, x, y, image, tile_properties)
+    def __init__(self, map, x, y, image=None, tile_properties=None):
+        super().__init__(map, x, y, image, tile_properties)
         self._layer = ENEMY_LAYER
 
-        self.groups = self.engine.all_sprites, self.engine.enemies
+        self.groups = self.map.all_sprites, self.map.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.enemy_name = self.properties["name"]
@@ -81,12 +81,12 @@ class Enemy(Entity):
         self.start_xy = enemy_props[self.enemy_name]["left_right_movement_start_coord"]
         self.move_sprites = []
         for i in range(self.movement_sprites):
-            self.move_sprites.append(self.engine.main_enemy_spritesheet.get_sprite(self.start_xy[0] + (TILE_SIZE * i), self.start_xy[1], self.width, self.height))
+            self.move_sprites.append(self.map.main_enemy_spritesheet.get_sprite(self.start_xy[0] + (TILE_SIZE * i), self.start_xy[1], self.width, self.height))
 
         self.right_animations = self.move_sprites
         self.left_animations = [pygame.transform.flip(img, True, False) for img in self.move_sprites]
 
-        self.image = self.engine.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height).convert()
+        self.image = self.map.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height).convert()
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
