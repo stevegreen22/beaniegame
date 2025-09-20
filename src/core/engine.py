@@ -37,8 +37,16 @@ class Engine:
         self.playing = True
 
         # Create the Starting area, may be moved into 'stages' later
-        self.area = Area(self, None, stage="start")
+        #world map, starting area world,
+        # area contains multiple maps.
+        # self.area = Area(self, None, stage="start")
+        self.build_starting_area()
+        #we want the player to persis because of inventory etc
         self.player = Player(self, 10, 10)
+
+    def build_starting_area(self):
+        self.area = Area(self, None, stage="start")
+
 
     def events(self):
         for event in pygame.event.get():
@@ -48,7 +56,11 @@ class Engine:
 
     def update(self):
         # all_sprites consists of player, ground and blocks
-        self.area.map.all_sprites.update()
+        current_map = None
+        for map in self.area.area_maps:
+            if map.current_map:
+                current_map = map
+        current_map.all_sprites.update()
 
 
     def draw(self):
@@ -56,14 +68,20 @@ class Engine:
         self.screen.fill(DARK_GREEN)
         # todo add the background/terrain to a group and set the layer
         # Draw background items like the tiles
-        self.area.map.animated_terrain.draw(self.screen)  # needs this to animate sand but can then be walked under by player
-        self.area.map.collision_blocks.draw(self.screen)
-        self.area.map.all_sprites.draw(self.screen)
-        self.area.map.enemies.draw(self.screen)
-        self.area.map.npcs.draw(self.screen)
-        self.area.map.traps.draw(self.screen)
+
+        current_map = None
+        for map in self.area.area_maps:
+            if map.current_map:
+                current_map = map
+
+        current_map.animated_terrain.draw(self.screen)  # needs this to animate sand but can then be walked under by player
+        current_map.collision_blocks.draw(self.screen)
+        current_map.all_sprites.draw(self.screen)
+        current_map.enemies.draw(self.screen)
+        current_map.npcs.draw(self.screen)
+        current_map.traps.draw(self.screen)
         # self.player_group.draw(self.screen)
-        self.area.map.animals.draw(self.screen)
+        current_map.animals.draw(self.screen)
 
         self.clock.tick(FPS)
         pygame.display.update()

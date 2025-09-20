@@ -702,6 +702,8 @@
  </tile>
  <tile id="1594">
   <properties>
+   <property name="player_spawn" value="(0,0)"/>
+   <property name="target_map" value="test"/>
    <property name="type" value="teleporter"/>
   </properties>
  </tile>
@@ -739,6 +741,8 @@
  </tile>
  <tile id="1658">
   <properties>
+   <property name="player_spawn" value="(20,20)"/>
+   <property name="target_map" value="starting_area"/>
    <property name="type" value="teleporter"/>
   </properties>
  </tile>

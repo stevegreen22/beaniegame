@@ -20,9 +20,10 @@ class TileKind:
         self.is_solid = is_solid
 
 class Map:
-    def __init__(self, engine, tile_kinds, stage):
+    def __init__(self, engine, tile_kinds, stage, current_map):
         self.engine = engine
         self.tile_kinds = tile_kinds
+        self.current_map = current_map
 
         self.tiles = []
         self.tile_size = TILE_SIZE
