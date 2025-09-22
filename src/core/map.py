@@ -20,10 +20,8 @@ class TileKind:
         self.is_solid = is_solid
 
 class Map:
-    def __init__(self, engine, tile_kinds, stage, current_map):
-        self.engine = engine
-        self.tile_kinds = tile_kinds
-        self.current_map = current_map
+    def __init__(self, stage, is_current_map):
+        self.is_current_map = is_current_map
 
         self.tiles = []
         self.tile_size = TILE_SIZE
@@ -50,19 +48,19 @@ class Map:
         self.rabbit_2_spritesheet = Spritesheet('assets/animals/rabbits.png')
         self.main_terrain_spritesheet = Spritesheet('assets/maps/tmx/img/terrain.png')
 
-
         self.build_terrain()
         self.build_mob_entities()
 
 
+
     def get_stage_map(self, stage):
         tiled_map = None
-        if stage == "start":
+        if stage == "world_1_1":
             # map_filename = f"{map_folder_location}/tmx/area1_withobjects.tmx"
             map_filename = f"{map_folder_location}/tmx/area_1_main.tmx"
             # map_filename = f"{map_folder_location}/tmx/{stagebla}.tmx"
             tiled_map = load_pygame(map_filename)
-        elif stage == "end":
+        elif stage == "world_1_2":
             map_filename = f"{map_folder_location}/tmx/area1_withobjects.tmx"
             tiled_map = load_pygame(map_filename)
         return tiled_map

@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, engine, x, y):
         self.engine = engine
         self._layer = PLAYER_LAYER
-        self.groups = self.engine.area.area_maps[0].player_group, self.engine.area.area_maps[0].all_sprites
+        self.groups = self.engine.area.current_map.player_group, self.engine.area.current_map.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
 
@@ -103,22 +103,22 @@ class Player(pygame.sprite.Sprite):
         from src.core.camera import camera
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            for sprite in self.engine.area.area_maps[0].all_sprites:
+            for sprite in self.engine.area.current_map.all_sprites:
                 sprite.rect.x += PLAYER_SPEED
             self.x_change -= PLAYER_SPEED
             self.facing = 'left'
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            for sprite in self.engine.area.area_maps[0].all_sprites:
+            for sprite in self.engine.area.current_map.all_sprites:
                 sprite.rect.x -= PLAYER_SPEED
             self.x_change += PLAYER_SPEED
             self.facing = 'right'
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            for sprite in self.engine.area.area_maps[0].all_sprites:
+            for sprite in self.engine.area.current_map.all_sprites:
                 sprite.rect.y += PLAYER_SPEED
             self.y_change -= PLAYER_SPEED
             self.facing = 'up'
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            for sprite in self.engine.area.area_maps[0].all_sprites:
+            for sprite in self.engine.area.current_map.all_sprites:
                 sprite.rect.y -= PLAYER_SPEED
             self.y_change += PLAYER_SPEED
             self.facing = 'down'
@@ -127,54 +127,53 @@ class Player(pygame.sprite.Sprite):
         camera.y = self.y - camera.height / 2 + 16
 
     def collide_teleports(self):
-        hits = pygame.sprite.spritecollide(self, self.engine.area.area_maps[0].teleporters, False)
+        hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.teleporters, False)
         if hits:
-            # if we walk into a door, get the door details of where it leads and create that map
-            door = self.engine.area.map.teleporters[0]
-            door_properties = door.properties
-            print(f"Door {door}")
-            self.engine.build_new_map(door_properties)
+            # if we walk into a door, get the door details of where it leads and create that mapawd
+            door_properties = self.engine.area.current_map.teleporters._spritelist[0].properties
+            print(f"Door {door_properties}")
+
+            #we have the player hitting the teleporter so we now need to move to the new map and update the player location
+            self.engine.area.load_new_map(door_properties)
+            self.rect.x = 320#door_properties['player_spawn'][0] update to give props x and y
+            self.rect.y = 320#door_properties['player_spawn'][1]
+            self.engine.area.current_map.all_sprites.add(self)
 
 
     def collide_enemies(self):
-        hits = pygame.sprite.spritecollide(self, self.engine.area.area_maps[0].enemies, False)
+        hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.enemies, False)
         # hits = pygame.sprite.spritecollide(self, self.engine.enemies, False, pygame.sprite.collide_mask)
         if hits:
-            # removes from allsprites groups
-            # self.kill()
-            # exit the game
-            # self.engine.playing = False
-
-            # Todo: this kinda works but should be much better....
-            self.engine.area = Area(self, None, stage="end")
-            # self.engine.player = Player(self.engine, 10, 10)
+            # removes from allsprites groups and exits games
+            self.kill()
+            self.engine.playing = False
 
     def collide_blocks(self, direction):
         if direction == 'x':
             # hits = pygame.sprite.spritecollide(self, self.engine.blocks, False, pygame.sprite.collide_mask)
-            hits = pygame.sprite.spritecollide(self, self.engine.area.area_maps[0].collision_blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.collision_blocks, False)
             if hits:
                 # pygame.mixer.Sound.play(test_sound)
                 # if we're moving right, and colliding, we put the character next to the block we collided with
                 if self.x_change > 0:
                     self.rect.x = hits[0].rect.left - self.rect.width
-                    for sprite in self.engine.area.area_maps[0].all_sprites:
+                    for sprite in self.engine.area.current_map.all_sprites:
                         sprite.rect.x += PLAYER_SPEED
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
-                    for sprite in self.engine.area.area_maps[0].all_sprites:
+                    for sprite in self.engine.area.current_map.all_sprites:
                         sprite.rect.x -= PLAYER_SPEED
         if direction == 'y':
-            hits = pygame.sprite.spritecollide(self, self.engine.area.area_maps[0].collision_blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.collision_blocks, False)
             if hits:
                 # moving down
                 if self.y_change > 0:
                     self.rect.y = hits[0].rect.top - self.rect.height
-                    for sprite in self.engine.area.area_maps[0].all_sprites:
+                    for sprite in self.engine.area.current_map.all_sprites:
                         sprite.rect.y += PLAYER_SPEED
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
-                    for sprite in self.engine.area.area_maps[0].all_sprites:
+                    for sprite in self.engine.area.current_map.all_sprites:
                         sprite.rect.y -= PLAYER_SPEED
 
     def animate(self):
