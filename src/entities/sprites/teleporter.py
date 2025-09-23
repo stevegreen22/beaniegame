@@ -19,3 +19,11 @@ class Teleporter(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+    teleports_map = {"identifier" :
+                         {"source_map" : "name",
+                          "target_map" : "name",
+                          "source_x" : 1,
+                          "source_y" : 1,
+                          "target_x" : 1,
+                          "target_y" : 1,}}

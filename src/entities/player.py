@@ -129,16 +129,20 @@ class Player(pygame.sprite.Sprite):
     def collide_teleports(self):
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.teleporters, False)
         if hits:
-            # if we walk into a door, get the door details of where it leads and create that mapawd
-            door_properties = self.engine.area.current_map.teleporters._spritelist[0].properties
+            # if we walk into a door, get the door details of where it leads and create that map
+            door = self.engine.area.current_map.teleporters._spritelist[0]
+            door_properties = door.properties
             print(f"Door {door_properties}")
 
             #we have the player hitting the teleporter so we now need to move to the new map and update the player location
             self.engine.area.load_new_map(door_properties)
-            self.rect.x = 320#door_properties['player_spawn'][0] update to give props x and y
-            self.rect.y = 320#door_properties['player_spawn'][1]
-            self.engine.area.current_map.all_sprites.add(self)
+            self.rect.x = door.x #320#door_properties['player_spawn'][0] update to give props x and y
+            self.rect.y = door.y #320#door_properties['player_spawn'][1]
+            self.update_player_sprite_groups()
 
+    def update_player_sprite_groups(self):
+        self.engine.area.current_map.all_sprites.add(self)
+        self.engine.area.current_map.player_group.add(self)
 
     def collide_enemies(self):
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.enemies, False)
