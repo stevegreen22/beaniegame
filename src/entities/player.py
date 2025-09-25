@@ -99,6 +99,18 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
 
+
+    # def fonts(self):
+    #     system_font = pygame.font.SysFont("monospace", 200)
+    #     download_font = pygame.font.Font("/Users/sgreen/PycharmProjects/BeanieGame/assets/fonts/black-north-font/blacknorth.otf", 20)
+    #
+    #     system_font = system_font.render("SystemFont", True, "black")
+    #     download_font = download_font.render(str(self.x) , True, "black")
+    #     system_font_rect = (200, 200)
+    #     download_font_rect = (200, 200)
+    #     # self.screen.blit(system_font, system_font_rect)
+    #     self.engine.screen.blit(download_font, download_font_rect)
+
     def movement(self):
         from src.core.camera import camera
         keys = pygame.key.get_pressed()

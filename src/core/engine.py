@@ -1,15 +1,7 @@
 import pygame
-
 from config.config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS, DARK_GREEN, TILE_LAYERS
 from src.core.area import Area
 from src.entities.player import Player
-from src.entities.sprites.animated_terrain import AnimatedTerrain
-from src.entities.sprites.animals import Animal
-from src.entities.sprites.enemies import Enemy
-from src.entities.sprites.statics import Block,Ground, Trap
-from src.entities.sprites.npcs import NPC
-from src.entities.sprites.sprite_manager import Spritesheet
-from src.entities.sprites.teleporter import Teleporter
 
 engine = None
 default_width = WINDOW_WIDTH
@@ -48,7 +40,6 @@ class Engine:
     def build_world(self):
         self.area = Area(stage="start_world_1")
 
-
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -60,10 +51,9 @@ class Engine:
         self.current_map = self.area.current_map
         self.current_map.all_sprites.update()
 
-
     def draw(self):
         # todo, can we fill the screen with a repeating image instead of block colour
-        self.screen.fill(DARK_GREEN)
+        self.screen.fill("silver")
         # todo add the background/terrain to a group and set the layer
         # Draw background items like the tiles
 
@@ -79,6 +69,9 @@ class Engine:
         self.current_map.animals.draw(self.screen)
 
         self.clock.tick(FPS)
+        x = self.player.rect.x
+        self.fonts(self.clock.get_fps())
+        pygame.display.set_caption("Beanie Game: FPS:" + str(self.clock.get_fps()))
         pygame.display.update()
 
 
@@ -86,6 +79,7 @@ class Engine:
         while self.playing:
             self.events()
             self.update()
+            # self.fonts()
             self.draw()
         self.running = False
 
@@ -96,3 +90,14 @@ class Engine:
 
     def intro_screen(self):
         pass
+
+    def fonts(self, text):
+        system_font = pygame.font.SysFont("monospace", 200)
+        download_font = pygame.font.Font("/Users/sgreen/PycharmProjects/BeanieGame/assets/fonts/black-north-font/blacknorth.otf", 20)
+
+        system_font = system_font.render("SystemFont", True, DARK_GREEN)
+        download_font = download_font.render(str(text) , True, DARK_GREEN)
+        system_font_rect = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
+        download_font_rect = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
+        # self.screen.blit(system_font, system_font_rect)
+        self.screen.blit(download_font, download_font_rect)
