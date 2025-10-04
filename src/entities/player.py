@@ -100,17 +100,6 @@ class Player(pygame.sprite.Sprite):
         self.y_change = 0
 
 
-    # def fonts(self):
-    #     system_font = pygame.font.SysFont("monospace", 200)
-    #     download_font = pygame.font.Font("/Users/sgreen/PycharmProjects/BeanieGame/assets/fonts/black-north-font/blacknorth.otf", 20)
-    #
-    #     system_font = system_font.render("SystemFont", True, "black")
-    #     download_font = download_font.render(str(self.x) , True, "black")
-    #     system_font_rect = (200, 200)
-    #     download_font_rect = (200, 200)
-    #     # self.screen.blit(system_font, system_font_rect)
-    #     self.engine.screen.blit(download_font, download_font_rect)
-
     def movement(self):
         from src.core.camera import camera
         keys = pygame.key.get_pressed()
@@ -138,6 +127,7 @@ class Player(pygame.sprite.Sprite):
         camera.x = self.x - camera.width / 2 + 16
         camera.y = self.y - camera.height / 2 + 16
 
+
     def collide_teleports(self):
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.teleporters, False)
         if hits:
@@ -152,9 +142,11 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = door.y #320#door_properties['player_spawn'][1]
             self.update_player_sprite_groups()
 
+
     def update_player_sprite_groups(self):
         self.engine.area.current_map.all_sprites.add(self)
         self.engine.area.current_map.player_group.add(self)
+
 
     def collide_enemies(self):
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.enemies, False)
@@ -163,6 +155,7 @@ class Player(pygame.sprite.Sprite):
             # removes from allsprites groups and exits games
             self.kill()
             self.engine.playing = False
+
 
     def collide_blocks(self, direction):
         if direction == 'x':
@@ -191,6 +184,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.bottom
                     for sprite in self.engine.area.current_map.all_sprites:
                         sprite.rect.y -= PLAYER_SPEED
+
 
     def animate(self):
         if self.facing == 'down':

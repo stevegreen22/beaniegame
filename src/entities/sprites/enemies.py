@@ -52,6 +52,7 @@ enemy_props = { "whitey" :{
                     "attack_animation_quantity" : None, #not yet configured
                 }
                 }
+# todo: add collision with trees etc.
 
 class Enemy(Entity):
     def __init__(self, map, x, y, image=None, tile_properties=None):
@@ -86,7 +87,7 @@ class Enemy(Entity):
         self.right_animations = self.move_sprites
         self.left_animations = [pygame.transform.flip(img, True, False) for img in self.move_sprites]
 
-        self.image = self.map.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height).convert()
+        self.image = self.map.main_enemy_spritesheet.get_sprite(0, 64, self.width, self.height)
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()

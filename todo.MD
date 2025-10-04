@@ -72,8 +72,20 @@ Beanie Game
 
 
 
+Ivy wants:
+chests that drop loot
+button press to interact
+inventory?
+drop on floor?
+simple at first
+weapon?  how do we equip or select weapons?
+potions?  how do we use them, what do they do?
+food?
 
 
+inventory class of n size.  chest contains one.
+
+death/ game over screne, 3 hearts
 
 
 

@@ -29,18 +29,34 @@ class Map:
         self.stage = stage
         self.tiled_map = self.get_stage_map(self.stage)
 
-        self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list = []
+
         self.collision_blocks = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.collision_blocks)
+        self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.all_sprites)
         self.enemies = pygame.sprite.LayeredUpdates()
-        self.attacks = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.enemies)
         self.npcs = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.npcs)
         self.traps = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.traps)
         self.animals = pygame.sprite.LayeredUpdates()
-        self.foreground_trees = pygame.sprite.LayeredUpdates()  # trees that the player can walk behind.
+        self.all_sprite_list.append(self.animals)
         self.animated_terrain = pygame.sprite.LayeredUpdates()
-        self.collision_group = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.animated_terrain)
         self.player_group = pygame.sprite.LayeredUpdates()
+        self.all_sprite_list.append(self.player_group)
+        self.attacks = pygame.sprite.LayeredUpdates()
+        # self.all_sprite_list.append(self.attacks)
+        self.foreground_trees = pygame.sprite.LayeredUpdates()  # trees that the player can walk behind.
+        self.all_sprite_list.append(self.foreground_trees)
+
+        self.collision_group = pygame.sprite.LayeredUpdates()
+        # self.all_sprite_list.append(self.collision_group)
+
         self.teleporters = pygame.sprite.LayeredUpdates()
+        # self.all_sprite_list.append(self.teleporters)
 
         self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/monster_spritesheet.png')
         # self.main_enemy_spritesheet = Spritesheet('assets/characters/enemy/orc_right_spritesheet_resize_test.png')
