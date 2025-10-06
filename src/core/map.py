@@ -64,15 +64,17 @@ class Map:
         self.rabbit_2_spritesheet = Spritesheet('assets/animals/rabbits.png')
         self.main_terrain_spritesheet = Spritesheet('assets/maps/tmx/img/terrain.png')
 
+        self.teleporter_list = {}
+
         self.build_terrain()
         self.build_mob_entities()
+
 
 
 
     def get_stage_map(self, stage):
         tiled_map = None
         if stage == "world_1_1":
-            # map_filename = f"{map_folder_location}/tmx/area1_withobjects.tmx"
             map_filename = f"{map_folder_location}/tmx/area_1_main.tmx"
             # map_filename = f"{map_folder_location}/tmx/{stagebla}.tmx"
             tiled_map = load_pygame(map_filename)
@@ -95,7 +97,8 @@ class Map:
                         if tile_properties["type"] == "tree":
                             Ground(self, x, y, image=image, tile_properties=tile_properties)
                         if tile_properties["type"] == "teleporter":
-                            Teleporter(self, x, y, image=image, tile_properties=tile_properties)
+                            tp = Teleporter(self, x, y, image=image, tile_properties=tile_properties)
+                            self.teleporter_list[tile_properties["id"]] = tp
                     Ground(self, x , y, image=image)
 
             if layer.name == "CollisionBlocks" or layer.name == "CollisionBlocks2":

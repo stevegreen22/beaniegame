@@ -761,4 +761,52 @@
    <property name="type" value="teleporter"/>
   </properties>
  </tile>
+ <tile id="2040">
+  <properties>
+   <property name="id" value="1"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2041">
+  <properties>
+   <property name="id" value="2"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2042">
+  <properties>
+   <property name="id" value="3"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2043">
+  <properties>
+   <property name="id" value="4"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2044">
+  <properties>
+   <property name="id" value="5"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2045">
+  <properties>
+   <property name="id" value="6"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2046">
+  <properties>
+   <property name="id" value="7"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
+ <tile id="2047">
+  <properties>
+   <property name="id" value="8"/>
+   <property name="type" value="teleporter"/>
+  </properties>
+ </tile>
 </tileset>

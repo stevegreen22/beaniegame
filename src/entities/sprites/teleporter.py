@@ -4,9 +4,28 @@ from config.config import TELEPORT_LAYER
 from src.entities.sprites.sprite_manager import Entity
 
 
+
+
 def teleport(area_file):
     from src.core.area import area
     area.load_file(area_file)
+
+
+# will need a 'special door' to go to a new world.
+teleport_counterpart_map = {
+    1:2, #door 1 links to door 2
+    2:1, #door 2 links to door 1
+}
+teleport_info_map = {
+    1: {
+        "source_map" : "world_1_1",
+        "target_map" : "world_1_2"
+    },
+    2: {
+        "source_map" : "world_1_2",
+        "target_map" : "world_1_1"
+    }
+}
 
 class Teleporter(Entity):
     def __init__(self, map, x, y, image=None, tile_properties=None):
@@ -15,6 +34,12 @@ class Teleporter(Entity):
 
         self.groups = [self.map.all_sprites, self.map.teleporters]
         pygame.sprite.Sprite.__init__(self, self.groups)
+
+        if tile_properties is not None:
+            self.tile_properties = tile_properties
+            self.id = tile_properties["id"]
+            self.counterpart_teleporter = teleport_counterpart_map.get(int(self.id))
+            self.teleporter_info = teleport_info_map.get(int(self.id))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -46,10 +71,17 @@ if the coords are the same we can get that from the tile.
 
 """
 
-teleports_map = {"identifier" :
-                         {"source_map" : "name",
-                          "target_map" : "name",
-                          "source_x" : 1,
-                          "source_y" : 1,
-                          "target_x" : 1,
-                          "target_y" : 1,}}
+"""
+for each door.
+    - current x and y, can get from it's rect
+    - target x and y, needs to be known upfront
+    - target map
+    - current map
+    - it's unique identifier
+    
+    
+    ooooor, each door is a pair...
+    door 1, door 2.
+    from this we can get the rest of the details?
+    
+"""

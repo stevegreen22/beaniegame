@@ -45,7 +45,7 @@ class Engine:
         # area contains multiple maps.
         # self.area = Area(self, None, stage="start")
         self.build_world()
-        #we want the player to persis because of inventory etc
+        #we want the player to persist because of inventory etc
         self.player = Player(self, 10, 10)
         self.current_map = self.area.current_map
 
@@ -67,16 +67,14 @@ class Engine:
         # todo, can we fill the screen with a repeating image instead of block colour
         self.screen.fill("silver")
         # todo add the background/terrain to a group and set the layer
-        # Draw background items like the tiles
         self.current_map = self.area.current_map
-        # todo: put these into a list and iterate through them
         # todo: fix enemies walking behind trees.
         for sprite in self.current_map.all_sprite_list:
             sprite.draw(self.screen)
 
         self.clock.tick(FPS)
         # interestingly enough, this could be used to draw the inventory as it moves with the player.
-        self.draw_font(self.fonts["black_north"],"x")
+        self.draw_font(self.fonts["black_north"],self.player.lives)
 
         pygame.display.set_caption("Beanie Game: FPS:" + str(self.clock.get_fps()))
         pygame.display.update()
@@ -87,8 +85,6 @@ class Engine:
             self.events()
             self.update()
             self.draw()
-        # self.running = False
-
 
     # todo: font or text drawn when not relative to the player isn't showing on screen...but buttons are...
     # make a text container class?
@@ -97,7 +93,6 @@ class Engine:
         text_content = "Game Over"
         text = font.render(text_content, True, WHITE)
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
-        # self.draw_font(font, text_content)
 
         button_content = "Restart Game"
         restart_button = Button(self.screen.get_width() // 2 - 100, 250, 200, 80,
@@ -127,8 +122,6 @@ class Engine:
 
     def intro_screen(self):
         intro_screen = True
-        # title = self.font.render("Beanie's Awesome Game", True, DARK_GREEN)
-        # title_rect = title.get_rect(x=WINDOW_WIDTH //2, y=WINDOW_HEIGHT // 4)
         font = self.fonts["black_north"]
         button_content = 'Play Game'
         play_button = Button(self.screen.get_width()//2-100, 50, 200, 80, YELLOW, BLUE, font, button_content, 32)
@@ -146,7 +139,6 @@ class Engine:
                 intro_screen = False
 
             self.screen.blit(self.intro_background, (0, 0))
-            # self.screen.blit(title, title_rect)
             self.screen.blit(play_button.image, play_button.rect)
             self.clock.tick(FPS)
             pygame.display.update()

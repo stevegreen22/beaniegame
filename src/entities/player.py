@@ -1,7 +1,6 @@
 import pygame
 import math
 from config.config import PLAYER_LAYER, TILE_SIZE, PLAYER_SPEED
-from src.core.area import Area
 from src.entities.sprites.sprite_manager import Spritesheet
 
 # todo: create a list of sprite sheets here with relevant info such as columns and pertinent ids
@@ -16,10 +15,8 @@ class Player(pygame.sprite.Sprite):
         self.groups = self.engine.area.current_map.player_group, self.engine.area.current_map.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-
         self.main_player_spritesheet = Spritesheet('assets/characters/player/main_character.png')
         # self.main_player_spritesheet = Spritesheet('assets/characters/player/red_main_spritesheet.png')
-
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
@@ -73,6 +70,8 @@ class Player(pygame.sprite.Sprite):
                            self.main_player_spritesheet.get_sprite(64, 64, self.width, self.height)
                            ]
 
+        self.lives = 3
+
         # self.mask = None
 
     # def draw(self):
@@ -89,19 +88,19 @@ class Player(pygame.sprite.Sprite):
         self.movement()
         self.animate()
         self.collide_teleports()
-        self.collide_enemies()
 
         self.rect.x += self.x_change
         self.collide_blocks('x')
+        self.collide_enemies('x')
         self.rect.y += self.y_change
         self.collide_blocks('y')
+        self.collide_enemies('y')
 
         self.x_change = 0
         self.y_change = 0
 
 
     def movement(self):
-        from src.core.camera import camera
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             for sprite in self.engine.area.current_map.all_sprites:
@@ -134,7 +133,11 @@ class Player(pygame.sprite.Sprite):
             # if we walk into a door, get the door details of where it leads and create that map
             door = self.engine.area.current_map.teleporters._spritelist[0]
             door_properties = door.properties
-            print(f"Door {door_properties}")
+            print(f"Door properties {door_properties}")
+            print(f"Door Info: {door.counterpart_teleporter}")
+            print(f"Door Counterpart : {door.teleporter_info}")
+            print(f"Door Counterpart Info : {self.engine.area.current_map.teleporter_list.get(door.teleporter_info)}")
+            print(f"Door: {door}")
 
             #we have the player hitting the teleporter so we now need to move to the new map and update the player location
             self.engine.area.load_new_map(door_properties)
@@ -148,12 +151,23 @@ class Player(pygame.sprite.Sprite):
         self.engine.area.current_map.player_group.add(self)
 
 
-    def collide_enemies(self):
+    def collide_enemies(self, direction):
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.enemies, False)
         # hits = pygame.sprite.spritecollide(self, self.engine.enemies, False, pygame.sprite.collide_mask)
         if hits:
-            # removes from allsprites groups and exits games
-            self.kill()
+            self.lives -= 1
+            if direction == 'x':
+                if self.x_change > 0:
+                    self.rect.x = hits[0].rect.left - self.rect.width
+                    hits[0].kill()
+                    for sprite in self.engine.area.current_map.all_sprites:
+                        sprite.rect.x += PLAYER_SPEED
+                if self.x_change < 0:
+                    self.rect.x = hits[0].rect.right
+                    hits[0].kill()
+                    for sprite in self.engine.area.current_map.all_sprites:
+                        sprite.rect.x -= PLAYER_SPEED
+        if self.lives <= 0:
             self.engine.playing = False
 
 

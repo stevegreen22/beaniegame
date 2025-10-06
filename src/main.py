@@ -2,7 +2,6 @@ import pygame
 import sys
 from core.engine import Engine
 
-
 pygame.init()
 e = Engine("Beanie Game")
 e.intro_screen()

@@ -5,7 +5,7 @@ Beanie Game
   - [ ] Player attack sword
   - [ ] Player attack magic - particle tut
   - [ ] Player inventory
-  - [ ] Health bar
+  - [ ] Health bar, 3 hearts
   - [ ] Slow down player
   - [ ] Food and hunger maybe affects speed
 
@@ -17,6 +17,8 @@ Beanie Game
   - [ x ] animate water...water class and then for each of those tiles needs a mapping to their respective tile coords
   - [ x ] Expand on water animation so waterfall flows faster
   - [ ] Multiple maps need to be created
+  - [ ] Dungeons, several, can we create them procedurally?
+  - [ ] Inside house / village, multiple shops, with sellers etc? A Mall
   - [ ] Side scroller section, needs physics etc
   - [ ] Refactor how we build all the terrain in one loop instead of splitting collision layers, prob needs tile type data
 
@@ -24,9 +26,16 @@ Beanie Game
 - Game Mechanics Updates
   - [ ] Intractable chests
   - [ ] Chest collisions
-  - [ ] Start screen
-  - [ ] Game over screen
+  - [ ] Chests drop loot
+  - [ ] Inventory system for both chests, animals and player
+  - [ ] Extra interactions, button to open chest etc
+  - [ x ] Start screen
+  - [ x ] Game over screen
   - [ ] Menu buttons
+  - [ x ] Button class with text
+  - [ ] Expand button class, curved corners, colours, sytle etc
+  - [ ] Font or text class for loading fonts more elegantly
+  - [ ] Why will font not be displayed unless player present or if using a button
   - [ ] Teleport system, button to confirm?
   - [ ] Add questline thing
   - [ ] Possible save state?!?!
@@ -35,13 +44,16 @@ Beanie Game
   - [ ] Pickups in general
   - [ ] Money system, coins pickup 
   - [ ] Shop facility
-  - [ ] implement basic save and load functionality 
-  - [ ] Chests drop loot
+  - [ ] Implement basic save and load functionality 
   - [ ] Can potions last for a certain time?
+  - [ ] Improve start/restart screens
+  - [ ] Add delays/animations on death and entering doors
   
 
 - Sprite Updates
 - [ ] Find out how to scale the images both up and down
+
+
 - animals
 - [ ] Not all animals will want to be scaled down
 - [ ] fix the scaling rect to be drawn at bottom axis
@@ -70,22 +82,12 @@ Beanie Game
 
 
 
-
-
-Ivy wants:
-chests that drop loot
-button press to interact
-inventory?
 drop on floor?
 simple at first
 weapon?  how do we equip or select weapons?
 potions?  how do we use them, what do they do?
 food?
 
-
-inventory class of n size.  chest contains one.
-
-death/ game over screne, 3 hearts
 
 
 
