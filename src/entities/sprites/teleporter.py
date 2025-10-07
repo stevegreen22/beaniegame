@@ -4,8 +4,6 @@ from config.config import TELEPORT_LAYER
 from src.entities.sprites.sprite_manager import Entity
 
 
-
-
 def teleport(area_file):
     from src.core.area import area
     area.load_file(area_file)
@@ -15,16 +13,6 @@ def teleport(area_file):
 teleport_counterpart_map = {
     1:2, #door 1 links to door 2
     2:1, #door 2 links to door 1
-}
-teleport_info_map = {
-    1: {
-        "source_map" : "world_1_1",
-        "target_map" : "world_1_2"
-    },
-    2: {
-        "source_map" : "world_1_2",
-        "target_map" : "world_1_1"
-    }
 }
 
 class Teleporter(Entity):
@@ -39,12 +27,48 @@ class Teleporter(Entity):
             self.tile_properties = tile_properties
             self.id = tile_properties["id"]
             self.counterpart_teleporter = teleport_counterpart_map.get(int(self.id))
-            self.teleporter_info = teleport_info_map.get(int(self.id))
+            self.teleporter_info = self.teleport_info_map.get(int(self.id))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
+    teleport_info_map = {
+        1: {
+            "source_map": "world_1_1",
+            "target_map": "world_1_2",
+            "counterpart": "2"
+
+        },
+        2: {
+            "source_map": "world_1_2",
+            "target_map": "world_1_1",
+            "counterpart": "1"
+        },
+        # same map test
+        3: {
+            "source_map": "world_1_1",
+            "target_map": "world_1_1",
+            "counterpart": "4"
+
+        },
+        4: {
+            "source_map": "world_1_1",
+            "target_map": "world_1_1",
+            "counterpart": "3"
+        },
+        5: {
+            "source_map": "world_1_1",
+            "target_map": "world_1_1",
+            "counterpart": "6"
+
+        },
+        6: {
+            "source_map": "world_1_1",
+            "target_map": "world_1_1",
+            "counterpart": "6"
+        }
+    }
 """
 Issue is that I  don't want to store lots of data in each of the tiles and
 I don't want to have multiple door tiles with each one pointing to a 

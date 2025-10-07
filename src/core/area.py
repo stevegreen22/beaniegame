@@ -17,6 +17,10 @@ class Area:
         # have a list of maps for the current area/world
         self.area_maps = []
         self.dict_maps = {}
+
+        # per map, may need to be per world/area
+        self.teleporter_list = {}
+
         self.populate_area_maps()
         self.current_map = self.get_current_map()
 
@@ -24,12 +28,11 @@ class Area:
     # With this being our world creator, at the start, we create and load the maps needed.
     def populate_area_maps(self):
         if self.stage == "start_world_1":
-            current_map = Map("world_1_1", is_current_map=True)
-            # self.area_maps.append(current_map)
+            current_map = Map("world_1_1", self.teleporter_list, is_current_map=True)
             self.dict_maps["world_1_1"] = current_map
             print(f"adding map {current_map} to list")
-            current_map = Map("world_1_2", is_current_map=False)
-            # self.area_maps.append(current_map)
+
+            current_map = Map("world_1_2", self.teleporter_list, is_current_map=False)
             self.dict_maps["world_1_2"] = current_map
             print(f"adding map {current_map} to list")
         elif self.stage == "end":
@@ -67,9 +70,9 @@ class Area:
 ## Todo: take current map and set current to false
     # create new map, set it to current and add to the list
     # update player coordiate
-    def load_new_map(self, teleporter_properties):
+    def load_new_map(self, map_to_load):
         # self.reset_sprites()
-        map_stage = 'world_1_2' #teleporter_properties['target_map']
+        map_stage = map_to_load
         # set the current map to not current
         self.current_map.is_current_map = False
         self.dict_maps[map_stage].is_current_map = True

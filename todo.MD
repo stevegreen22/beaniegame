@@ -81,13 +81,14 @@ Beanie Game
 - [ ] npcs need to be scaled up
 
 
-
 drop on floor?
 simple at first
 weapon?  how do we equip or select weapons?
 potions?  how do we use them, what do they do?
 food?
-
+Fix player camera not being centered after walking through doors.
+fix loading doors/teleporters on other maps as we need them to be created before they're
+added to the list that we use to pull the coordinates out of.
 
 
 

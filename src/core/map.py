@@ -20,7 +20,7 @@ class TileKind:
         self.is_solid = is_solid
 
 class Map:
-    def __init__(self, stage, is_current_map):
+    def __init__(self, stage, teleporter_list, is_current_map):
         self.is_current_map = is_current_map
 
         self.tiles = []
@@ -64,12 +64,10 @@ class Map:
         self.rabbit_2_spritesheet = Spritesheet('assets/animals/rabbits.png')
         self.main_terrain_spritesheet = Spritesheet('assets/maps/tmx/img/terrain.png')
 
-        self.teleporter_list = {}
+        self.teleporter_list = teleporter_list
 
         self.build_terrain()
         self.build_mob_entities()
-
-
 
 
     def get_stage_map(self, stage):

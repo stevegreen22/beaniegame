@@ -2,6 +2,7 @@ import pygame
 import math
 from config.config import PLAYER_LAYER, TILE_SIZE, PLAYER_SPEED
 from src.entities.sprites.sprite_manager import Spritesheet
+from src.entities.sprites.teleporter import Teleporter
 
 # todo: create a list of sprite sheets here with relevant info such as columns and pertinent ids
 pygame.mixer.init()
@@ -130,19 +131,53 @@ class Player(pygame.sprite.Sprite):
     def collide_teleports(self):
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.teleporters, False)
         if hits:
-            # if we walk into a door, get the door details of where it leads and create that map
-            door = self.engine.area.current_map.teleporters._spritelist[0]
-            door_properties = door.properties
-            print(f"Door properties {door_properties}")
-            print(f"Door Info: {door.counterpart_teleporter}")
-            print(f"Door Counterpart : {door.teleporter_info}")
-            print(f"Door Counterpart Info : {self.engine.area.current_map.teleporter_list.get(door.teleporter_info)}")
-            print(f"Door: {door}")
+            """
+            Walk into door:
+            - Obtain the door details:
+                - Get the id from the tile properties of the door
+                - Get the target map from the door_map using its id
+            - Obtain the counterpart door:
+                - use the current door's ID to get the counterpart from the door_map
+            - Obtain the counterpart door details:
+                - Using the id from the previous step, pull out the Door Object from the door_object_map
+                - Use this to get the door's rect x and y coordinates
+                - Set the player x and y.    
+            """
+            current_door = self.engine.area.current_map.teleporters._spritelist[0]
+            current_door_door_properties = current_door.properties
+            current_door_id = current_door_door_properties["id"]
 
-            #we have the player hitting the teleporter so we now need to move to the new map and update the player location
-            self.engine.area.load_new_map(door_properties)
-            self.rect.x = door.x #320#door_properties['player_spawn'][0] update to give props x and y
-            self.rect.y = door.y #320#door_properties['player_spawn'][1]
+            door_mapping = Teleporter.teleport_info_map.get(int(current_door_id))
+            current_door_target_map = door_mapping["target_map"]
+            current_door_source_map = door_mapping["source_map"]
+            target_counterpart_id = door_mapping["counterpart"]
+
+            counterpart_door = self.engine.area.teleporter_list.get(target_counterpart_id)
+            counterpart_door_properties = counterpart_door.properties
+            counterpart_door_x = counterpart_door.rect.x
+            counterpart_door_y = counterpart_door.rect.y
+
+            print(f"Current Door details: \n"
+                  f"ID: {current_door_id}\n"
+                  f"Properties: {current_door.properties}\n"
+                  f"....\n"
+                  f"Door Mapping: {door_mapping}\n"
+                  f"....\n"
+                  f"CounterDoor: {counterpart_door}\n"
+                  f"CounterDoorProperties: {counterpart_door.properties}\n"
+                  f"...\n"
+                  f"Player X and Y: {self.rect.x},{self.rect.y}\n"
+                  f"Counterpart X and Y: {counterpart_door_x},{counterpart_door_y}\n")
+
+            # target map that we need to load, if different from current map...
+            if current_door_target_map is not current_door_source_map:
+                self.engine.area.load_new_map(current_door_target_map)
+
+
+            # update the player position to be the target door's rect
+            # todo: add player direction value instead.
+            self.rect.x = counterpart_door_x + 32 #320#door_properties['player_spawn'][0] update to give props x and y
+            self.rect.y = counterpart_door_y #320#door_properties['player_spawn'][1]
             self.update_player_sprite_groups()
 
 
