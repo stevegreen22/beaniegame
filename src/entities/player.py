@@ -2,7 +2,6 @@ import pygame
 import math
 from config.config import PLAYER_LAYER, TILE_SIZE, PLAYER_SPEED
 from src.entities.sprites.sprite_manager import Spritesheet
-from src.entities.sprites.teleporter import Teleporter
 
 # todo: create a list of sprite sheets here with relevant info such as columns and pertinent ids
 pygame.mixer.init()
