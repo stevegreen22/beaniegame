@@ -137,7 +137,7 @@ class Player(pygame.sprite.Sprite):
             print(f"Door Info: {door.counterpart_teleporter}")
             print(f"Door Counterpart : {door.teleporter_info}")
             print(f"Door Counterpart Info : {self.engine.area.current_map.teleporter_list.get(door.teleporter_info)}")
-            print(f"Door: {door}")
+            print(f"test Door: {door}")
 
             #we have the player hitting the teleporter so we now need to move to the new map and update the player location
             self.engine.area.load_new_map(door_properties)
