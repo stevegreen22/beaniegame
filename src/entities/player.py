@@ -2,6 +2,7 @@ import pygame
 import math
 from config.config import PLAYER_LAYER, TILE_SIZE, PLAYER_SPEED
 from src.entities.sprites.sprite_manager import Spritesheet
+from src.entities.sprites.teleporter import Teleporter
 
 # todo: create a list of sprite sheets here with relevant info such as columns and pertinent ids
 pygame.mixer.init()
@@ -87,14 +88,18 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement()
         self.animate()
-        self.collide_teleports()
 
         self.rect.x += self.x_change
+
         self.collide_blocks('x')
         self.collide_enemies('x')
+        self.collide_teleports()
+
         self.rect.y += self.y_change
+
         self.collide_blocks('y')
         self.collide_enemies('y')
+        self.collide_teleports()
 
         self.x_change = 0
         self.y_change = 0
@@ -128,6 +133,7 @@ class Player(pygame.sprite.Sprite):
 
 
     def collide_teleports(self):
+        current_door = None
         hits = pygame.sprite.spritecollide(self, self.engine.area.current_map.teleporters, False)
         if hits:
             """
@@ -142,7 +148,7 @@ class Player(pygame.sprite.Sprite):
                 - Use this to get the door's rect x and y coordinates
                 - Set the player x and y.    
             """
-            current_door = self.engine.area.current_map.teleporters._spritelist[0]
+            current_door = hits[0]
             current_door_door_properties = current_door.properties
             current_door_id = current_door_door_properties["id"]
 
@@ -172,12 +178,14 @@ class Player(pygame.sprite.Sprite):
             if current_door_target_map is not current_door_source_map:
                 self.engine.area.load_new_map(current_door_target_map)
 
-
             # update the player position to be the target door's rect
             # todo: add player direction value instead.
             self.rect.x = counterpart_door_x + 32 #320#door_properties['player_spawn'][0] update to give props x and y
             self.rect.y = counterpart_door_y #320#door_properties['player_spawn'][1]
             self.update_player_sprite_groups()
+        else:
+            pass
+            #no hits?
 
 
     def update_player_sprite_groups(self):

@@ -33,15 +33,17 @@ class Teleporter(Entity):
         self.rect.x = self.x
         self.rect.y = self.y
 
+# two doors, they link to each other's id.
+
+
     teleport_info_map = {
         1: {
             "source_map": "world_1_1",
-            "target_map": "world_1_2",
+            "target_map": "world_1_2",#2
             "counterpart": "2"
-
         },
         2: {
-            "source_map": "world_1_2",
+            "source_map": "world_1_2",#2
             "target_map": "world_1_1",
             "counterpart": "1"
         },
@@ -50,7 +52,6 @@ class Teleporter(Entity):
             "source_map": "world_1_1",
             "target_map": "world_1_1",
             "counterpart": "4"
-
         },
         4: {
             "source_map": "world_1_1",
@@ -61,12 +62,11 @@ class Teleporter(Entity):
             "source_map": "world_1_1",
             "target_map": "world_1_1",
             "counterpart": "6"
-
         },
         6: {
             "source_map": "world_1_1",
             "target_map": "world_1_1",
-            "counterpart": "6"
+            "counterpart": "5"
         }
     }
 """
